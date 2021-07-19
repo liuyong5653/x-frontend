@@ -13,16 +13,19 @@ import IErc721 from "../../contracts/IERC721.json";
 import Loader from "react-loader-spinner";
 import HashField from "../HashField/HashField";
 import { useFavoriteNFTs } from "../../contexts/FavoriteNFTsContext";
-import addresses from "../../addresses/mainnet.json";
+
+const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
+const XSTORE = process.env.REACT_APP_XSTORE
 
 function ApproveNftsPanel({ vaultId, ticker, closePanel }) {
   const { account } = useWallet();
   const injected = window.ethereum;
-  const provider =
-    injected && injected.chainId === "0x1"
-      ? injected
-      : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
+  // const provider =
+  //   injected && injected.chainId === "0x1"
+  //     ? injected
+  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
 
+  const provider = injected
   const { current: web3 } = useRef(new Web3(provider));
 
   const [tokenId, setTokenId] = useState("");
@@ -34,7 +37,7 @@ function ApproveNftsPanel({ vaultId, ticker, closePanel }) {
 
   const [nftAddress, setNftAddress] = useState("");
 
-  const xStore = new web3.eth.Contract(XStore.abi, addresses.xStore);
+  const xStore = new web3.eth.Contract(XStore.abi, XSTORE);
 
   useEffect(() => {
     xStore.methods
@@ -48,7 +51,7 @@ function ApproveNftsPanel({ vaultId, ticker, closePanel }) {
   const handleApproveAll = () => {
     const nft = new web3.eth.Contract(IErc721.abi, nftAddress);
     nft.methods
-      .setApprovalForAll(addresses.nftxProxy, true)
+      .setApprovalForAll(NFTX_PROXY, true)
       .send(
         {
           from: account,
@@ -65,7 +68,7 @@ function ApproveNftsPanel({ vaultId, ticker, closePanel }) {
   const handleApproveIndividual = () => {
     const nft = new web3.eth.Contract(IErc721.abi, nftAddress);
     nft.methods
-      .approve(addresses.nftxProxy, tokenId)
+      .approve(NFTX_PROXY, tokenId)
       .send(
         {
           from: account,

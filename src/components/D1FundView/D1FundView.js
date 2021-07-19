@@ -12,10 +12,9 @@ import {
   IconExternal,
 } from "@aragon/ui";
 import XStore from "../../contracts/XStore.json";
-import Nftx from "../../contracts/NFTX.json";
+import Nftx from "../../contracts/NFTXv11.json";
 import XToken from "../../contracts/XToken.json";
 import IErc721Plus from "../../contracts/IERC721Plus.json";
-import addresses from "../../addresses/mainnet.json";
 
 import ManageFundPanel from "../InnerPanels/ManageFundPanel";
 import MintD1FundPanel from "../InnerPanels/MintD1FundPanel";
@@ -25,23 +24,27 @@ import RedeemD1FundPanel from "../InnerPanels/RedeemD1FundPanel";
 import FundsList from "../FundsList/FundsList";
 
 const zeroAddress = "0x0000000000000000000000000000000000000000";
+const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
+const XSTORE = process.env.REACT_APP_XSTORE
 
 function D1FundView({ fundsData, balances }) {
-  console.log("balances2", balances);
+  console.log("D1FundView fundsData", fundsData)
+  console.log("D1FundView balances", balances);
   const location = useLocation();
   const [vaultId, setVaultId] = useState(null);
   const [invalidVid, setInvalidVid] = useState(false);
 
   const { account } = useWallet();
   const injected = window.ethereum;
-  const provider =
-    injected && injected.chainId === "0x1"
-      ? injected
-      : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
+  // const provider =
+  //   injected && injected.chainId === "0x1"
+  //     ? injected
+  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
 
+  const provider = injected
   const { current: web3 } = useRef(new Web3(provider));
-  const xStore = new web3.eth.Contract(XStore.abi, addresses.xStore);
-  const nftx = new web3.eth.Contract(Nftx.abi, addresses.nftxProxy);
+  const xStore = new web3.eth.Contract(XStore.abi, XSTORE);
+  const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
 
   const [panelTitle, setPanelTitle] = useState("");
   const [panelOpened, setPanelOpened] = useState(false);
@@ -70,7 +73,7 @@ function D1FundView({ fundsData, balances }) {
 
   const handleClickManage = () => {
     if (!fundData) return;
-    setPanelTitle(`Manage ${fundData.fund || "Fund"}`);
+    setPanelTitle(`Manage ${fundData.fund || "Vault"}`);
     setInnerPanel(
       <ManageFundPanel
         vaultId={vaultId}
@@ -83,62 +86,65 @@ function D1FundView({ fundsData, balances }) {
     setPanelOpened(true);
   };
 
-  const handleMint = () => {
-    setPanelTitle(`${fundData.fundToken.symbol} ▸ Mint`);
-    setInnerPanel(
-      <MintD1FundPanel
-        vaultId={vaultId}
-        ticker={fundData.fundToken.symbol}
-        onContinue={() => {
-          setPanelOpened(false);
-        }}
-        allowMintRequests={fundData.allowMintRequests}
-        onMakeRequest={() => {
-          setPanelOpened(false);
-          setTimeout(() => {
-            handleMintRequest();
-          }, 500);
-        }}
-      />
-    );
-    setPanelOpened(true);
-  };
+  console.log("D1FundView fundData===>",fundData)
+  console.log("D1FundView vaultId===>"+vaultId)
 
-  const handleMintRequest = () => {
-    setPanelTitle(`${fundData.fundToken.symbol} ▸ Request`);
-    setInnerPanel(
-      <MintRequestPanel
-        vaultId={vaultId}
-        ticker={fundData.fundToken.symbol}
-        onContinue={() => {
-          setPanelOpened(false);
-        }}
-        onMintNow={() => {
-          setPanelOpened(false);
-          setTimeout(() => {
-            handleMint();
-          }, 500);
-        }}
-      />
-    );
-    setPanelOpened(true);
-  };
+  // const handleMint = () => {
+  //   setPanelTitle(`${fundData.fundToken.symbol} ▸ Mint`);
+  //   setInnerPanel(
+  //     <MintD1FundPanel
+  //       vaultId={vaultId}
+  //       ticker={fundData.fundToken.symbol}
+  //       onContinue={() => {
+  //         setPanelOpened(false);
+  //       }}
+  //       allowMintRequests={fundData.allowMintRequests}
+  //       onMakeRequest={() => {
+  //         setPanelOpened(false);
+  //         setTimeout(() => {
+  //           handleMintRequest();
+  //         }, 500);
+  //       }}
+  //     />
+  //   );
+  //   setPanelOpened(true);
+  // };
 
-  const handleRedeem = () => {
-    setPanelTitle(`${fundData.fundToken.symbol} ▸ Redeem`);
-    setInnerPanel();
-    setInnerPanel(
-      <RedeemD1FundPanel
-        vaultId={vaultId}
-        address={fundData.fundToken.address}
-        ticker={fundData.fundToken.symbol}
-        onContinue={() => {
-          setPanelOpened(false);
-        }}
-      />
-    );
-    setPanelOpened(true);
-  };
+  // const handleMintRequest = () => {
+  //   setPanelTitle(`${fundData.fundToken.symbol} ▸ Request`);
+  //   setInnerPanel(
+  //     <MintRequestPanel
+  //       vaultId={vaultId}
+  //       ticker={fundData.fundToken.symbol}
+  //       onContinue={() => {
+  //         setPanelOpened(false);
+  //       }}
+  //       onMintNow={() => {
+  //         setPanelOpened(false);
+  //         setTimeout(() => {
+  //           handleMint();
+  //         }, 500);
+  //       }}
+  //     />
+  //   );
+  //   setPanelOpened(true);
+  // };
+
+  // const handleRedeem = () => {
+  //   setPanelTitle(`${fundData.fundToken.symbol} ▸ Redeem`);
+  //   setInnerPanel();
+  //   setInnerPanel(
+  //     <RedeemD1FundPanel
+  //       vaultId={vaultId}
+  //       address={fundData.fundToken.address}
+  //       ticker={fundData.fundToken.symbol}
+  //       onContinue={() => {
+  //         setPanelOpened(false);
+  //       }}
+  //     />
+  //   );
+  //   setPanelOpened(true);
+  // };
 
   if (invalidVid) {
     return <div>Invalid fundID</div>;
@@ -183,7 +189,7 @@ function D1FundView({ fundsData, balances }) {
                 }
               `}
             >
-              Funds
+              Vaults
             </Link>
           </div>{" "}
           <div
@@ -205,13 +211,13 @@ function D1FundView({ fundsData, balances }) {
                 color: #9690c1;
               `}
             >
-              Fund #{vaultId}
+              Vault #{vaultId}
             </span>
           </div>
         </div>
         <Button
-          label="Manage Fund"
-          disabled={!vaultId}
+          label="Manage Vault"
+          disabled={vaultId==null}
           onClick={handleClickManage}
         />
       </div>
@@ -277,6 +283,7 @@ function D1FundView({ fundsData, balances }) {
                   value: fundData.manager,
                 });
               }
+              // TODO 什么逻辑？？？？？？
               if (!fundData.isClosed && !fundData.negateEligibility) {
                 arr.push({
                   key: "Requests",

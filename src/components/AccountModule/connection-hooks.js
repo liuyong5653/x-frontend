@@ -27,6 +27,12 @@ const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000;
 
 export function useNetworkConnectionData() {
   const { ethereum } = useWallet();
+  // console.log("------------>useNetworkConnectionData")
+  // console.log(ethereum)
+  // const injected = window.ethereum;
+  // const provider = injected
+  // const walletWeb3 = getWeb3(provider);
+
   const walletWeb3 = ethereum && getWeb3(ethereum);
   const [walletChainId, setWalletChainId] = useState(-1);
   const clientChainId = network.chainId;
@@ -79,8 +85,9 @@ export function useWalletConnectionDetails(
     return defaultOkConnectionDetails;
   }
 
+  // TODO 为什么clientListening==false？？？
   if (
-    !clientListening ||
+    // !clientListening ||
     !walletListening ||
     !clientOnline ||
     !walletOnline ||

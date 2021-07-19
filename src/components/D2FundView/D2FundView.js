@@ -15,10 +15,9 @@ import {
 } from "@aragon/ui";
 import FundsList from "../FundsList/FundsList";
 import XStore from "../../contracts/XStore.json";
-import Nftx from "../../contracts/NFTX.json";
+import Nftx from "../../contracts/NFTXv11.json";
 import XToken from "../../contracts/XToken.json";
 import Erc20 from "../../contracts/ERC20.json";
-import addresses from "../../addresses/mainnet.json";
 import balancerPools from "../../addresses/balancePools.json";
 
 import ManageFundPanel from "../InnerPanels/ManageFundPanel";
@@ -27,6 +26,8 @@ import MintRequestPanel from "../InnerPanels/MintRequestPanel";
 import RedeemD1FundPanel from "../InnerPanels/RedeemD1FundPanel";
 
 const zeroAddress = "0x0000000000000000000000000000000000000000";
+const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
+const XSTORE = process.env.REACT_APP_XSTORE
 
 function D2FundView({ fundsData, balances }) {
   const location = useLocation();
@@ -35,14 +36,15 @@ function D2FundView({ fundsData, balances }) {
 
   const { account } = useWallet();
   const injected = window.ethereum;
-  const provider =
-    injected && injected.chainId === "0x1"
-      ? injected
-      : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
+  // const provider =
+  //   injected && injected.chainId === "0x1"
+  //     ? injected
+  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
 
+  const provider = injected
   const { current: web3 } = useRef(new Web3(provider));
-  const xStore = new web3.eth.Contract(XStore.abi, addresses.xStore);
-  const nftx = new web3.eth.Contract(Nftx.abi, addresses.nftxProxy);
+  const xStore = new web3.eth.Contract(XStore.abi, XSTORE);
+  const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
 
   /* const [isFinalized, setIsFinalized] = useState(null);
   const [manager, setManager] = useState(null);

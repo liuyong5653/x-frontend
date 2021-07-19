@@ -9,26 +9,29 @@ import {
 } from "@aragon/ui";
 import Web3 from "web3";
 import { useWallet } from "use-wallet";
-import Nftx from "../../contracts/NFTX.json";
+import Nftx from "../../contracts/NFTXv11.json";
 import XStore from "../../contracts/XStore.json";
 import IErc721 from "../../contracts/IERC721.json";
 import KittyCore from "../../contracts/KittyCore.json";
 import Loader from "react-loader-spinner";
 import HashField from "../HashField/HashField";
 import { useFavoriteNFTs } from "../../contexts/FavoriteNFTsContext";
-import addresses from "../../addresses/mainnet.json";
+
+const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
+const XSTORE = process.env.REACT_APP_XSTORE
 
 function MintRequestPanel({ fundData, onContinue, onMintNow }) {
   const { account } = useWallet();
   const injected = window.ethereum;
-  const provider =
-    injected && injected.chainId === "0x1"
-      ? injected
-      : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
+  // const provider =
+  //   injected && injected.chainId === "0x1"
+  //     ? injected
+  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
 
+  const provider = injected
   const { current: web3 } = useRef(new Web3(provider));
-  const xStore = new web3.eth.Contract(XStore.abi, addresses.xStore);
-  const nftx = new web3.eth.Contract(Nftx.abi, addresses.nftxProxy);
+  const xStore = new web3.eth.Contract(XStore.abi, XSTORE);
+  const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
 
   const [tokenIds, setTokenIds] = useState("");
   const [tokenIdsArr, setTokenIdsArr] = useState([]);
@@ -81,7 +84,7 @@ function MintRequestPanel({ fundData, onContinue, onMintNow }) {
     if (!isKittyAddr(fundData.asset.address)) {
       const nft = new web3.eth.Contract(IErc721.abi, fundData.asset.address);
       nft.methods
-        .isApprovedForAll(account, addresses.nftxProxy)
+        .isApprovedForAll(account, NFTX_PROXY)
         .call({ from: account })
         .then((retVal) => {
           setIsApprovedForAll(retVal);
@@ -147,7 +150,7 @@ function MintRequestPanel({ fundData, onContinue, onMintNow }) {
         let count = 0;
         tokenIdsArr.forEach((tokenId, index) => {
           const finish = (retVal) => {
-            newNftApprovalArr[index] = retVal === addresses.nftxProxy;
+            newNftApprovalArr[index] = retVal === NFTX_PROXY;
             count += 1;
             if (count === nftOwnershipArr.length) {
               resolve(newNftApprovalArr);
@@ -190,7 +193,7 @@ function MintRequestPanel({ fundData, onContinue, onMintNow }) {
     setTxIsApproval(false);
     setTxHash(null);
     setTxReceipt(null);
-    const nftx = new web3.eth.Contract(Nftx.abi, addresses.nftxProxy);
+    const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
     nftx.methods
       .requestMint(fundData.vaultId, tokenIdsArr)
       .send(
@@ -218,7 +221,7 @@ function MintRequestPanel({ fundData, onContinue, onMintNow }) {
     setTxIsApproval(true);
     const nft = new web3.eth.Contract(IErc721.abi, fundData.asset.address);
     nft.methods
-      .approve(addresses.nftxProxy, tokenId)
+      .approve(NFTX_PROXY, tokenId)
       .send({ from: account }, (error, txHash) => {})
       .on("error", (error) => setTxError(error))
       .on("transactionHash", (txHash) => setTxHash(txHash))
@@ -237,7 +240,7 @@ function MintRequestPanel({ fundData, onContinue, onMintNow }) {
     setTxIsApproval(true);
     const nft = new web3.eth.Contract(IErc721.abi, fundData.asset.address);
     nft.methods
-      .setApprovalForAll(addresses.nftxProxy, isApproved)
+      .setApprovalForAll(NFTX_PROXY, isApproved)
       .send(
         {
           from: account,

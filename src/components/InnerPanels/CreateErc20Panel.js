@@ -11,7 +11,8 @@ import { useWallet } from "use-wallet";
 import erc20 from "../../contracts/XToken.json";
 import Loader from "react-loader-spinner";
 import HashField from "../HashField/HashField";
-import addresses from "../../addresses/mainnet.json";
+
+const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
 
 function CreateErc20Panel({ onContinue }) {
   const { account } = useWallet();
@@ -31,7 +32,7 @@ function CreateErc20Panel({ onContinue }) {
     tokenContract
       .deploy({
         data: erc20.bytecode,
-        arguments: [name, symbol, addresses.nftxProxy],
+        arguments: [name, symbol, NFTX_PROXY],
       })
       .send(
         {

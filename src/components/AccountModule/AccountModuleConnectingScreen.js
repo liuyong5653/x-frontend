@@ -86,7 +86,7 @@ function AccountModuleConnectingScreen({ onCancel, providerId }) {
         >
           Connecting to {provider.name}
         </h1>
-        <p
+        {/* <p
           css={`
             width: ${36 * GU}px;
             color: ${theme.surfaceContentSecondary};
@@ -94,7 +94,7 @@ function AccountModuleConnectingScreen({ onCancel, providerId }) {
         >
           Log into {getProviderString("your Ethereum wallet", provider.id)}. You
           may be temporarily redirected to a new screen.
-        </p>
+        </p> */}
       </div>
       <div
         css={`

@@ -68,7 +68,7 @@ function AccountModuleConnectedScreen({
   const Icon = connectionColor !== theme.positive ? IconCross : IconCheck;
 
   const formattedConnectionMessage = connectionMessage.includes("Connected")
-    ? `Connected to Ethereum ${walletNetworkName} Network`
+    ? `Connected to ${walletNetworkName} Network`
     : connectionMessage;
 
   return (
@@ -152,17 +152,17 @@ function AccountModuleConnectedScreen({
         )}
       </FlexWrapper>
 
-      {hasNetworkMismatch ? (
+      {/* {hasNetworkMismatch ? (
         <div
           css={`
             margin-top: ${1 * GU}px;
           `}
         >
-          Please connect to the Ethereum {clientNetworkName} Network.
+          Please connect to the {clientNetworkName} Network.
         </div>
       ) : (
         <WalletSyncedInfo header={header} info={info} status={status} />
-      )}
+      )} */}
 
       <Button
         onClick={handleDisconnect}

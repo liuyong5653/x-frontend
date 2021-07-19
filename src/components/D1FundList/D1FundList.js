@@ -35,11 +35,12 @@ function D1FundList({ fundsData, balances }) {
   const history = useHistory();
   const { account } = useWallet();
   const injected = window.ethereum;
-  const provider =
-    injected && injected.chainId === "0x1"
-      ? injected
-      : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
+  // const provider =
+  //   injected && injected.chainId === "0x1"
+  //     ? injected
+  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
 
+  const provider = injected
   const { current: web3 } = useRef(new Web3(provider));
 
   const [panelTitle, setPanelTitle] = useState("");

@@ -3,19 +3,22 @@ import { DataView } from "@aragon/ui";
 import Web3 from "web3";
 import { useWallet } from "use-wallet";
 import HashField from "../HashField/HashField";
-import Nftx from "../../contracts/NFTX.json";
-import addresses from "../../addresses/mainnet.json";
+import Nftx from "../../contracts/NFTXv11.json";
+
+const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
+const XSTORE = process.env.REACT_APP_XSTORE
 
 function NftxEvents() {
   const { account } = useWallet();
   const injected = window.ethereum;
-  const provider =
-    injected && injected.chainId === "0x1"
-      ? injected
-      : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
-
+  // const provider =
+  //   injected && injected.chainId === "0x1"
+  //     ? injected
+  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
+  
+  const provider = injected
   const { current: web3 } = useRef(new Web3(provider));
-  const nftx = new web3.eth.Contract(Nftx.abi, addresses.nftxProxy);
+  const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
 
   const [events, setEvents] = useState([]);
   // const [eventTimes, setEventTimes] = useState([]);

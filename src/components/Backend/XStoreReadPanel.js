@@ -12,7 +12,8 @@ import XStore from "../../contracts/XStore.json";
 import Loader from "react-loader-spinner";
 import HashField from "../HashField/HashField";
 import { useFavoriteNFTs } from "../../contexts/FavoriteNFTsContext";
-import addresses from "../../addresses/mainnet.json";
+
+const XSTORE = process.env.REACT_APP_XSTORE
 
 function XStoreReadPanel() {
   const { account } = useWallet();
@@ -21,7 +22,7 @@ function XStoreReadPanel() {
 
   const { current: web3 } = useRef(new Web3(window.ethereum));
 
-  const xStore = new web3.eth.Contract(XStore.abi, addresses.xStore);
+  const xStore = new web3.eth.Contract(XStore.abi, XSTORE);
 
   const [funcParams, setFuncParams] = useState(JSON.parse("[[]]"));
   const [returnVals, setReturnVals] = useState(JSON.parse("[[]]"));

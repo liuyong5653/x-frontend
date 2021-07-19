@@ -8,17 +8,22 @@ import {
 } from "@aragon/ui";
 import Web3 from "web3";
 import { useWallet } from "use-wallet";
-import Nftx from "../../contracts/NFTX.json";
+import Nftx from "../../contracts/NFTXv11.json";
 import Loader from "react-loader-spinner";
 import HashField from "../HashField/HashField";
 
 const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
 
-function CreateFundPanel({ tokenAddress, onContinue }) {
+function CreateVaultPanel({ onContinue }) {
+  console.log('CreateVaultPanel NFTX_PROXY====>'+NFTX_PROXY)
+
+  // TODO 判断若没有链接钱包，点击时先链接钱包
   const { account } = useWallet();
 
   const { current: web3 } = useRef(new Web3(window.ethereum));
 
+  const [name, setName] = useState("");
+  const [symbol, setSymbol] = useState("");
   const [nftAddress, setNftAddress] = useState("");
 
   const [txHash, setTxHash] = useState(null);
@@ -29,7 +34,7 @@ function CreateFundPanel({ tokenAddress, onContinue }) {
     const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
     // window.nftx = nftx;
     nftx.methods
-      .createVault(tokenAddress, nftAddress, false)
+      .createVault(name, symbol, nftAddress, false)
       .send(
         {
           from: account,
@@ -39,6 +44,8 @@ function CreateFundPanel({ tokenAddress, onContinue }) {
       .on("error", (error) => setTxError(error))
       .on("transactionHash", (txHash) => setTxHash(txHash))
       .on("receipt", (receipt) => {
+        console.log("handleCreate receipt-------->")
+        console.log(receipt);
         setTxReceipt(receipt);
       });
   };
@@ -51,6 +58,24 @@ function CreateFundPanel({ tokenAddress, onContinue }) {
         `}
       >
         <TextInput
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Name (e.g. Punk-Basic)"
+          wide={true}
+          css={`
+            margin-bottom: 10px;
+          `}
+        />       
+        <TextInput
+          value={symbol}
+          onChange={(event) => setSymbol(event.target.value)}
+          placeholder="Symbol (e.g. PUNK-BASIC)"
+          wide={true}
+          css={`
+            margin-bottom: 10px;
+          `}
+        />
+        <TextInput
           value={nftAddress}
           onChange={(event) => setNftAddress(event.target.value)}
           placeholder="NFT contract address (e.g. 0x0bf7...D63a)"
@@ -61,9 +86,9 @@ function CreateFundPanel({ tokenAddress, onContinue }) {
         />
 
         <Button
-          label={"Create Fund"}
+          label={!account ? '请先链接钱包' : "Create Fund"}
           wide={true}
-          disabled={!nftAddress || !account}
+          disabled={!name || !symbol || !nftAddress || !account}
           onClick={handleCreate}
         />
       </div>
@@ -114,7 +139,7 @@ function CreateFundPanel({ tokenAddress, onContinue }) {
             margin-bottom: 20px;
           `}
         >
-          Fund created succesfully
+          Vault created succesfully
           <IconCheck
             css={`
               transform: translate(5px, 5px) scale(1.2);
@@ -134,4 +159,4 @@ function CreateFundPanel({ tokenAddress, onContinue }) {
   }
 }
 
-export default CreateFundPanel;
+export default CreateVaultPanel;

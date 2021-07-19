@@ -70,14 +70,14 @@ function TopBar({ status, solid }) {
           >
             <AccountModule />
           </div>
-          <Button
+          {/* <Button
             display="icon"
             icon={<IconSettings />}
             label="Settings"
             size="medium"
             onClick={handleSettingsClick}
-            disabled={true}
-          />
+            disabled={false}
+          /> */}
         </div>
       </div>
     </React.Fragment>

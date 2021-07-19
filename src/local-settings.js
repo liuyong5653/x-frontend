@@ -13,6 +13,8 @@ const SENTRY_DSN = "SENTRY_DSN";
 const PORTIS_DAPP_ID = "PORTIS_DAPP_ID";
 const FORTMATIC_API_KEY = "FORTMATIC_API_KEY";
 
+const CHAIN_ID = parseInt(process.env.REACT_APP_CHAIN_ID ?? '1012')
+
 // Parcel requires env vars to be declared statically.
 const CONFIGURATION_VARS = [
   [
@@ -102,7 +104,8 @@ export function getEnsRegistryAddress() {
 }
 
 export function getEthNetworkType() {
-  return getLocalSetting(ETH_NETWORK_TYPE) || "main";
+  // return getLocalSetting(ETH_NETWORK_TYPE) || "main";
+  return CHAIN_ID === 1012 ? 'NewChainMainNet' : 'NewChainTestNet';
 }
 
 export function getIpfsGateway() {

@@ -8,11 +8,12 @@ import {
 } from "@aragon/ui";
 import Web3 from "web3";
 import { useWallet } from "use-wallet";
-import Nftx from "../../contracts/NFTX.json";
+import Nftx from "../../contracts/NFTXv11.json";
 import Loader from "react-loader-spinner";
 import HashField from "../HashField/HashField";
 import { useFavoriteNFTs } from "../../contexts/FavoriteNFTsContext";
-import addresses from "../../addresses/mainnet.json";
+
+const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
 
 function ManageFundPanel() {
   const { account } = useWallet();
@@ -37,7 +38,7 @@ function ManageFundPanel() {
   const [txReceipt, setTxReceipt] = useState(null);
   const [txError, setTxError] = useState(null);
 
-  const nftx = new web3.eth.Contract(Nftx.abi, addresses.nftxProxy);
+  const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
 
   const getIsEligible = () => {
     nftx.methods

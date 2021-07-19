@@ -79,7 +79,7 @@ function AccountModuleProvidersScreen({ onActivate }) {
           />
         ))}
       </div>
-      <div
+      {/* <div
         css={`
           display: flex;
           justify-content: center;
@@ -89,7 +89,7 @@ function AccountModuleProvidersScreen({ onActivate }) {
         <Link href="https://ethereum.org/wallets/" css="text-decoration: none">
           Don’t have an Ethereum account?
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 }

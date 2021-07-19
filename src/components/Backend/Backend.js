@@ -26,7 +26,8 @@ import XStoreReadPanel from "./XStoreReadPanel";
 import NftxEvents from "./NftxEvents";
 import XStoreEvents from "./XStoreEvents";
 
-import addresses from "../../addresses/mainnet.json";
+const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
+const XSTORE = process.env.REACT_APP_XSTORE
 
 function Backend() {
   const [panelTitle, setPanelTitle] = useState("");
@@ -85,12 +86,12 @@ function Backend() {
           entries={[
             {
               name: "NFTX",
-              address: addresses.nftxProxy,
+              address: NFTX_PROXY,
               proxy: true,
             },
             {
               name: "XStore",
-              address: addresses.xStore,
+              address: XSTORE,
             },
           ]}
           renderEntry={({ name, address, proxy }) => {

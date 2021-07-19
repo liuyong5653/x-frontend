@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { UseWalletProvider } from "use-wallet";
+import React, { useState, useEffect, useRef } from "react";
+import { useWallet, UseWalletProvider } from "use-wallet";
 import { Spring, animated } from "react-spring";
 import {
   SITE_STATUS_ERROR,
@@ -17,6 +17,8 @@ import { FavoriteNFTsProvider } from "./contexts/FavoriteNFTsContext";
 // import MainView from "./components/_archived/MainView/MainView";
 import Site from "./components/Site/Site";
 import GlobalPreferences from "./components/GlobalPreferences/GlobalPreferences";
+
+const CHAIN_ID = parseInt(process.env.REACT_APP_CHAIN_ID ?? '1012')
 
 const SELECTOR_NETWORKS = [
   ["main", "Ethereum Mainnet", "https://client.aragon.org/"],
@@ -65,7 +67,7 @@ function App() {
 export default function WrapAppWithProvider() {
   return (
     <Router>
-      <UseWalletProvider chainId={1}>
+      <UseWalletProvider chainId={CHAIN_ID}>
         <div
           className="app-wrapper"
           css={`

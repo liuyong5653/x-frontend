@@ -3,30 +3,34 @@ import { useWallet } from "use-wallet";
 import { useLocation, Link } from "react-router-dom";
 import Web3 from "web3";
 import XStore from "../../contracts/XStore.json";
-import addresses from "../../addresses/mainnet.json";
 // import D1FundViewOld from "../D1FundView/D1FundView_Old";
 import D1FundView from "../D1FundView/D1FundView";
 import D2FundView from "../D2FundView/D2FundView";
 // import D2FundView from '../D2FundView/D2FundView';
 import { Button, DataView, textStyle } from "@aragon/ui";
 
+const XSTORE = process.env.REACT_APP_XSTORE
+
 function FundView({ fundsData, balances }) {
-  console.log("balances1b", balances);
+  console.log("FundView balances====》", balances);
   const { account } = useWallet();
   const injected = window.ethereum;
-  const provider =
-    injected && injected.chainId === "0x1"
-      ? injected
-      : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
+  // const provider =
+  //   injected && injected.chainId === "0x1"
+  //     ? injected
+  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
+
+  const provider = injected
   const { current: web3 } = useRef(new Web3(provider));
 
-  const xStore = new web3.eth.Contract(XStore.abi, addresses.xStore);
+  const xStore = new web3.eth.Contract(XStore.abi, XSTORE);
 
   const [vaultId, setVaultId] = useState(null);
   const [invalidVid, setInvalidVid] = useState(false);
-  const [degree, setDegree] = useState(null);
+  const [degree, setDegree] = useState(1);
   const location = useLocation();
 
+  console.log("FundView location=====>",location)
   useEffect(() => {
     if (location) {
       const _vaultId = location.pathname.split("/")[2];
@@ -37,23 +41,23 @@ function FundView({ fundsData, balances }) {
     }
   }, [location]);
 
-  useEffect(() => {
-    if (xStore && vaultId) {
-      xStore.methods
-        .isD2Vault(vaultId)
-        .call({ from: account })
-        .then((retVal) => {
-          setDegree(retVal ? 2 : 1);
-        });
-    }
-  }, [xStore, vaultId, account]);
+  // useEffect(() => {
+  //   if (xStore && vaultId) {
+  //     xStore.methods
+  //       .isD2Vault(vaultId)
+  //       .call({ from: account })
+  //       .then((retVal) => {
+  //         setDegree(retVal ? 2 : 1);
+  //       });
+  //   }
+  // }, [xStore, vaultId, account]);
 
   if (invalidVid) {
-    return <div>Invalid Fund ID</div>;
+    return <div>Invalid Vault ID</div>;
   } else if (degree === 1) {
     return <D1FundView fundsData={fundsData} balances={balances} />;
-  } else if (degree === 2) {
-    return <D2FundView fundsData={fundsData} balances={balances} />;
+  // } else if (degree === 2) {
+  //   return <D2FundView fundsData={fundsData} balances={balances} />;
   } else {
     return (
       <div
@@ -95,7 +99,7 @@ function FundView({ fundsData, balances }) {
                   }
                 `}
               >
-                Funds
+                Vaults
               </Link>
             </div>{" "}
             <div
@@ -117,11 +121,11 @@ function FundView({ fundsData, balances }) {
                   color: #9690c1;
                 `}
               >
-                Fund #{vaultId}
+                Vault #{vaultId}
               </span>
             </div>
           </div>
-          <Button label="Manage Fund" disabled={true} />
+          <Button label="Manage Vault" disabled={true} />
         </div>
         <div
           css={`

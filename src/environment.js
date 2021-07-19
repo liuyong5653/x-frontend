@@ -3,7 +3,8 @@ import { getDefaultEthNode, getEthNetworkType, getIpfsGateway } from "./local-se
 import { getNetworkConfig } from "./network-config";
 
 const networkType = getEthNetworkType();
-
+console.log("environment.js networkType========")
+console.log(networkType)
 const networkConfig = getNetworkConfig(networkType);
 export const network = networkConfig.settings;
 export const providers = networkConfig.providers;

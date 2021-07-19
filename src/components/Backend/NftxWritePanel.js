@@ -9,24 +9,26 @@ import {
 import Web3 from "web3";
 import { useWallet } from "use-wallet";
 // import Nftx from "../../contracts/NFTX.json";
-import NftxV7 from "../../contracts/NFTXv7.json";
+import Nftx from "../../contracts/NFTXv11.json";
 // import NftxV2 from "../../contracts/NFTXv2.json";
 import Loader from "react-loader-spinner";
 import HashField from "../HashField/HashField";
 import { useFavoriteNFTs } from "../../contexts/FavoriteNFTsContext";
-import addresses from "../../addresses/mainnet.json";
+
+const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
 
 function ManageFundPanel({ closePanel }) {
   const { account } = useWallet();
   const injected = window.ethereum;
-  const provider =
-    injected && (injected.chainId === "0x1" || injected.isFrame)
-      ? injected
-      : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
+  // const provider =
+  //   injected && (injected.chainId === "0x1" || injected.isFrame)
+  //     ? injected
+  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
 
+  const provider = injected
   const { current: web3 } = useRef(new Web3(provider));
 
-  const nftx = new web3.eth.Contract(NftxV7.abi, addresses.nftxProxy);
+  const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
 
   const [funcParams, setFuncParams] = useState(JSON.parse("[[]]"));
 
@@ -46,7 +48,7 @@ function ManageFundPanel({ closePanel }) {
           }
         `}
       >
-        {NftxV7.abi
+        {Nftx.abi
           .filter(
             (item) =>
               item.type === "function" && !item.stateMutability.includes("view")

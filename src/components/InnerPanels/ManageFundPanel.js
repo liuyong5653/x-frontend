@@ -8,11 +8,12 @@ import {
 } from "@aragon/ui";
 import Web3 from "web3";
 import { useWallet } from "use-wallet";
-import Nftx from "../../contracts/NFTX.json";
+import Nftx from "../../contracts/NFTXv11.json";
 import Loader from "react-loader-spinner";
 import HashField from "../HashField/HashField";
 import { useFavoriteNFTs } from "../../contexts/FavoriteNFTsContext";
-import addresses from "../../addresses/mainnet.json";
+
+const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
 
 function ManageFundPanel({
   vaultId,
@@ -24,16 +25,17 @@ function ManageFundPanel({
   const { account } = useWallet();
 
   const injected = window.ethereum;
-  const provider =
-    (injected && injected.chainId === "0x1") || injected.isFrame
-      ? injected
-      : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
+  // const provider =
+  //   (injected && injected.chainId === "0x1") || injected.isFrame
+  //     ? injected
+  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
 
+  const provider = injected
   const { current: web3 } = useRef(new Web3(provider));
-  const nftx = new web3.eth.Contract(Nftx.abi, addresses.nftxProxy);
+  const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
 
-  const [newName, setNewName] = useState("");
-  const [newSymbol, setNewSymbol] = useState("");
+  // const [newName, setNewName] = useState("");
+  // const [newSymbol, setNewSymbol] = useState("");
   const [nftIds, setNftIds] = useState("");
   const [areEligible, setAreEligible] = useState("");
   const [shouldNegate, setShouldNegate] = useState("");
@@ -58,40 +60,48 @@ function ManageFundPanel({
       .then((retVal) => setNftxAdmin(retVal));
   });
 
-  const handleChangeTokenName = () => {
-    nftx.methods
-      .changeTokenName(vaultId, newName)
-      .send(
-        {
-          from: account,
-        },
-        (error, txHash) => {}
-      )
-      .on("error", (error) => setTxError(error))
-      .on("transactionHash", (txHash) => setTxHash(txHash))
-      .on("receipt", (receipt) => {
-        setTxReceipt(receipt);
-      });
-  };
+  console.log("ManageFundPanel manager ====>" + manager)
+  console.log("ManageFundPanel owner ====>" + nftxAdmin)
+  console.log((account !== manager && account !== nftxAdmin))
 
-  const handleChangeTokenSymbol = () => {
-    nftx.methods
-      .changeTokenName(vaultId, newName)
-      .send(
-        {
-          from: account,
-        },
-        (error, txHash) => {}
-      )
-      .on("error", (error) => setTxError(error))
-      .on("transactionHash", (txHash) => setTxHash(txHash))
-      .on("receipt", (receipt) => {
-        setTxReceipt(receipt);
-      });
-  };
+  // const handleChangeTokenName = () => {
+  //   nftx.methods
+  //     .changeTokenName(vaultId, newName)
+  //     .send(
+  //       {
+  //         from: account,
+  //       },
+  //       (error, txHash) => {}
+  //     )
+  //     .on("error", (error) => setTxError(error))
+  //     .on("transactionHash", (txHash) => setTxHash(txHash))
+  //     .on("receipt", (receipt) => {
+  //       setTxReceipt(receipt);
+  //     });
+  // };
+
+  // const handleChangeTokenSymbol = () => {
+  //   nftx.methods
+  //     .changeTokenName(vaultId, newName)
+  //     .send(
+  //       {
+  //         from: account,
+  //       },
+  //       (error, txHash) => {}
+  //     )
+  //     .on("error", (error) => setTxError(error))
+  //     .on("transactionHash", (txHash) => setTxHash(txHash))
+  //     .on("receipt", (receipt) => {
+  //       setTxReceipt(receipt);
+  //     });
+  // };
 
   const handleSetIsEligible = () => {
     console.log("inside handleSetIsEligible() !!!!! ");
+    console.log("JSON.parse(nftIds)====>",JSON.parse(nftIds))
+    console.log("vaultId====>",vaultId)
+    console.log('areEligible.toLowerCase().includes("true")===>', areEligible.toLowerCase().includes("true"))
+
     nftx.methods
       .setIsEligible(
         vaultId,
@@ -105,7 +115,7 @@ function ManageFundPanel({
         (error, txHash) => {}
       )
       .on("error", (error) => {
-        console.log("error", error);
+        console.log("handleSetIsEligible error", error);
         setTxError(error);
       })
       .on("transactionHash", (txHash) => setTxHash(txHash))
@@ -114,7 +124,14 @@ function ManageFundPanel({
       });
   };
 
+  // TODO 取消掉这个，就一个所有都通过 或 指定范围(指定范围时将setNegateEligibility=false)，不需要什么取反     UI上简单点！
+  // 有一个问题，若vault持有资产，无法修改setNegateEligibility，必须空了以后才可以设置！！！   和handleSetIsEligible合并需要考虑这个问题，必须先把当前资产取出，所以没有Finalize之前不允许对外公开
   const handleSetNegateEligibility = () => {
+
+    console.log("handleSetNegateEligibility")
+    console.log("vaultId====>",vaultId)
+    console.log('shouldNegate.toLowerCase().includes("true")====>', shouldNegate.toLowerCase().includes("true"))
+
     nftx.methods
       .setNegateEligibility(
         vaultId,
@@ -150,22 +167,22 @@ function ManageFundPanel({
       });
   };
 
-  const handleClose = () => {
-    nftx.methods
-      .closeVault(vaultId)
-      .send(
-        {
-          from: account,
-        },
-        (error, txHash) => {}
-      )
-      .on("error", (error) => setTxError(error))
-      .on("transactionHash", (txHash) => setTxHash(txHash))
-      .on("receipt", (receipt) => {
-        setTxReceipt(receipt);
-        console.log(receipt);
-      });
-  };
+  // const handleClose = () => {
+  //   nftx.methods
+  //     .closeVault(vaultId)
+  //     .send(
+  //       {
+  //         from: account,
+  //       },
+  //       (error, txHash) => {}
+  //     )
+  //     .on("error", (error) => setTxError(error))
+  //     .on("transactionHash", (txHash) => setTxHash(txHash))
+  //     .on("receipt", (receipt) => {
+  //       setTxReceipt(receipt);
+  //       console.log(receipt);
+  //     });
+  // };
 
   if (!txHash) {
     return (
@@ -177,7 +194,7 @@ function ManageFundPanel({
           }
         `}
       >
-        <div>
+        {/* <div>
           <TextInput
             value={newName}
             onChange={(event) => setNewName(event.target.value)}
@@ -199,8 +216,8 @@ function ManageFundPanel({
               margin-bottom: 15px;
             `}
           />
-        </div>
-        <div>
+        </div> */}
+        {/* <div>
           <TextInput
             value={newSymbol}
             onChange={(event) => setNewSymbol(event.target.value)}
@@ -222,7 +239,7 @@ function ManageFundPanel({
               margin-bottom: 15px;
             `}
           />
-        </div>
+        </div> */}
         <div>
           <TextInput
             value={nftIds}
@@ -246,7 +263,7 @@ function ManageFundPanel({
             label={"Set NFT Eligibility"}
             wide={true}
             disabled={
-              isClosed || (account !== manager && account !== nftxAdmin)
+              isClosed || (isFinalized && account !== nftxAdmin) || (account !== manager && account !== nftxAdmin)
             }
             onClick={handleSetIsEligible}
             css={`
@@ -269,7 +286,7 @@ function ManageFundPanel({
             label={"Negate Eligibility"}
             wide={true}
             disabled={
-              isClosed || (account !== manager && account !== nftxAdmin)
+              isClosed || (isFinalized && account !== nftxAdmin) || (account !== manager && account !== nftxAdmin)
             }
             onClick={handleSetNegateEligibility}
             css={`
@@ -283,7 +300,7 @@ function ManageFundPanel({
             label={"Finalize Fund"}
             wide={true}
             disabled={
-              isClosed || (account !== manager && account !== nftxAdmin)
+              isClosed || isFinalized || (account !== manager && account !== nftxAdmin)
             }
             onClick={handleFinalize}
             css={`
@@ -292,7 +309,7 @@ function ManageFundPanel({
             `}
           />
         </div>
-        <div>
+        {/* <div>
           <Button
             label={"Close Fund"}
             wide={true}
@@ -305,7 +322,7 @@ function ManageFundPanel({
               margin-bottom: 15px;
             `}
           />
-        </div>
+        </div> */}
       </div>
     );
   } else if (txHash && !txReceipt) {

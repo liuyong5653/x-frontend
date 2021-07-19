@@ -26,25 +26,28 @@ import CreateErc20Panel from "../InnerPanels/CreateErc20Panel";
 import CreateFundPanel from "../InnerPanels/CreateFundPanel";
 import ManageFundPanel from "../InnerPanels/ManageFundPanel";
 import Web3 from "web3";
-import Nftx from "../../contracts/NFTX.json";
+import Nftx from "../../contracts/NFTXv11.json";
 import XStore from "../../contracts/XStore.json";
 import XToken from "../../contracts/XToken.json";
-import addresses from "../../addresses/mainnet.json";
 import ApproveNftsPanel from "../InnerPanels/ApproveNftsPanel";
 import Web3Utils from "web3-utils";
+
+const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
+const XSTORE = process.env.REACT_APP_XSTORE
 
 function NftFundList() {
   const history = useHistory();
   const { account } = useWallet();
   const injected = window.ethereum;
-  const provider =
-    injected && injected.chainId === "0x1"
-      ? injected
-      : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
+  // const provider =
+  //   injected && injected.chainId === "0x1"
+  //     ? injected
+  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
 
+  const provider = injected
   const { current: web3 } = useRef(new Web3(provider));
-  const nftx = new web3.eth.Contract(Nftx.abi, addresses.nftxProxy);
-  const xStore = new web3.eth.Contract(XStore.abi, addresses.xStore);
+  const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
+  const xStore = new web3.eth.Contract(XStore.abi, XSTORE);
 
   const [panelTitle, setPanelTitle] = useState("");
   const [panelOpened, setPanelOpened] = useState(false);

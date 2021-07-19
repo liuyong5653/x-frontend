@@ -13,22 +13,25 @@ import erc721 from "../../contracts/ERC721Public.json";
 import Loader from "react-loader-spinner";
 import HashField from "../HashField/HashField";
 import { useFavoriteNFTs } from "../../contexts/FavoriteNFTsContext";
-import addresses from "../../addresses/mainnet.json";
 import XStore from "../../contracts/XStore.json";
-import Nftx from "../../contracts/NFTX.json";
+import Nftx from "../../contracts/NFTXv11.json";
 import XToken from "../../contracts/XToken.json";
+
+const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
+const XSTORE = process.env.REACT_APP_XSTORE
 
 function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
   const { account } = useWallet();
   const injected = window.ethereum;
-  const provider =
-    injected && injected.chainId === "0x1"
-      ? injected
-      : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
+  // const provider =
+  //   injected && injected.chainId === "0x1"
+  //     ? injected
+  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
 
+  const provider = injected
   const { current: web3 } = useRef(new Web3(provider));
-  const xStore = new web3.eth.Contract(XStore.abi, addresses.xStore);
-  const nftx = new web3.eth.Contract(Nftx.abi, addresses.nftxProxy);
+  const xStore = new web3.eth.Contract(XStore.abi, XSTORE);
+  const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
   const xToken = new web3.eth.Contract(XToken.abi, fundData.fundToken.address);
 
   const [amount, setAmount] = useState("");
@@ -49,7 +52,7 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
   const fetchAllowance = () => {
     if (account)
       xToken.methods
-        .allowance(account, addresses.nftxProxy)
+        .allowance(account, NFTX_PROXY)
         .call({ from: account })
         .then((retVal) => setAllowance(retVal));
   };
@@ -69,14 +72,27 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
       .on("error", (error) => setTxError(error))
       .on("transactionHash", (txHash) => setTxHash(txHash))
       .on("receipt", (receipt) => {
-        receipt.events["Redeem"] &&
-          setNftIdsArr(receipt.events["Redeem"].returnValues.nftIds);
-        setDoneRedeeming(true);
-        axios.get(
-          "https://purgecache.simplethings.workers.dev/__purge_cache?zone=0d06080714818598b845f30e54535880"
-        );
-        setTxReceipt(receipt);
+        console.log('handleRedeem receipt-------->');
         console.log(receipt);
+
+        if(receipt.events["Redeem"]){
+          if(receipt.events["Redeem"] instanceof Array) {
+            console.log("Redeem length="+receipt.events["Redeem"].length);
+            const nftIds = receipt.events["Redeem"].map((elem) => {
+              return elem.returnValues.nftIds
+            });
+            setNftIdsArr(nftIds)
+          } else {
+            setNftIdsArr(receipt.events["Redeem"].returnValues.nftIds)
+          }
+        }
+        // receipt.events["Redeem"] &&
+        //   setNftIdsArr(receipt.events["Redeem"].returnValues.nftIds);
+        setDoneRedeeming(true);
+        // axios.get(
+        //   "https://purgecache.simplethings.workers.dev/__purge_cache?zone=0d06080714818598b845f30e54535880"
+        // );
+        setTxReceipt(receipt);
       });
   };
 
@@ -85,7 +101,7 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
     setTxReceipt(null);
     setTxIsApproval(true);
     xToken.methods
-      .approve(addresses.nftxProxy, web3.utils.toWei(amount))
+      .approve(NFTX_PROXY, web3.utils.toWei(amount))
       .send(
         {
           from: account,
@@ -97,6 +113,7 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
       .on("receipt", (receipt) => {
         fetchAllowance();
         setTimeout(() => setTxReceipt(receipt), 1000);
+        console.log("handleApprove receipt-------->")
         console.log(receipt);
       });
   };
@@ -143,6 +160,7 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
             ))()}
         </div>
 
+        {/* // TODO 判断用户余额，如果超过余额提示余额不足 */}
         <Button
           label={`Redeem ${!isNaN(parseInt(amount)) ? parseInt(amount) : ""} ${
             fundData.fundToken.symbol

@@ -4,18 +4,20 @@ import Web3 from "web3";
 import { useWallet } from "use-wallet";
 import HashField from "../HashField/HashField";
 import XStore from "../../contracts/XStore.json";
-import addresses from "../../addresses/mainnet.json";
+
+const XSTORE = process.env.REACT_APP_XSTORE
 
 function XStoreEvents() {
   const { account } = useWallet();
   const injected = window.ethereum;
-  const provider =
-    injected && injected.chainId === "0x1"
-      ? injected
-      : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
+  // const provider =
+  //   injected && injected.chainId === "0x1"
+  //     ? injected
+  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
 
+  const provider = injected
   const { current: web3 } = useRef(new Web3(provider));
-  const xStore = new web3.eth.Contract(XStore.abi, addresses.xStore);
+  const xStore = new web3.eth.Contract(XStore.abi, XSTORE);
 
   const [events, setEvents] = useState([]);
   // const [eventTimes, setEventTimes] = useState([]);

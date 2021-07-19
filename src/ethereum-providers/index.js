@@ -3,6 +3,7 @@ import { isElectron } from '../utils'
 import frame from './icons/Frame.png'
 import cipher from './icons/Cipher.png'
 import metamask from './icons/Metamask.png'
+import newmask from './icons/newmask.png'
 import status from './icons/Status.png'
 import wallet from './icons/wallet.svg'
 import fortmatic from './icons/Fortmatic.svg'
@@ -22,13 +23,22 @@ const PROVIDERS = new Map(
     },
     {
       id: 'metamask',
-      name: 'Metamask',
+      name: 'NewMask',
       type: 'Desktop',
-      image: metamask,
+      image: newmask,
       strings: {
-        'your Ethereum wallet': 'Metamask',
+        'your NewChain wallet': 'NewMask',
       },
     },
+    // {
+    //   id: 'metamask',
+    //   name: 'Metamask',
+    //   type: 'Desktop',
+    //   image: metamask,
+    //   strings: {
+    //     'your Ethereum wallet': 'Metamask',
+    //   },
+    // },
     {
       id: 'status',
       name: 'Status',

@@ -10,6 +10,51 @@ const fortmaticApiKey = getFortmaticApiKey();
 const portisDappId = getPortisDappId();
 
 export const networkConfigs = {
+  NewChainMainNet: {
+    addresses: {
+      ensRegistry: // TODO ？？？？？
+        localEnsRegistryAddress || "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+    },
+    nodes: { // TODO ？？？？
+      defaultEth: `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
+    },
+    settings: {
+      chainId: 1012,
+      name: "NewChainMainNet",
+      shortName: "NewChainMainNet",
+      type: "NewChainMainNet", // as returned by web3.eth.net.getNetworkType()
+      live: true,
+    },
+    providers: [
+      { id: "provided" },
+      // { id: "frame" },
+      fortmaticApiKey ? { id: "fortmatic", conf: fortmaticApiKey } : null,
+      portisDappId ? { id: "portis", conf: portisDappId } : null,
+    ].filter((p) => p),
+  },
+  NewChainTestNet: {
+    addresses: {
+      ensRegistry: // TODO ？？？？？
+        localEnsRegistryAddress || "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+    },
+    nodes: { // TODO ？？？？
+      defaultEth: `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
+    },
+    settings: {
+      chainId: 1007,
+      name: "NewChainTestNet",
+      shortName: "NewChainTestNet",
+      type: "NewChainTestNet", // as returned by web3.eth.net.getNetworkType()
+      live: true,
+    },
+    providers: [
+      { id: "provided" },
+      // { id: "frame" },
+      fortmaticApiKey ? { id: "fortmatic", conf: fortmaticApiKey } : null,
+      portisDappId ? { id: "portis", conf: portisDappId } : null,
+    ].filter((p) => p),
+  },
+
   main: {
     addresses: {
       ensRegistry:
