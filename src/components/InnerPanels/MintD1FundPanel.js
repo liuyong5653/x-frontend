@@ -312,6 +312,7 @@ function MintD1FundPanel({
       });
   };
 
+  // TODO 上来就判断是否全部授权了，没有授权直接让对方授权，而不是一个个授权！！！！
   const approveOrUnapproveAllBtn = (
     <Button
       label={isApprovedForAll ? "Unapprove All" : "Approve All"}

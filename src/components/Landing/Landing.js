@@ -128,16 +128,7 @@ function Landing({ selectorNetworks }) {
         margin-top: 25px;
       `}
     >
-      <Split
-        primary={
-          <div>
-            {/* <DropDown
-              items={selectorNetworksSorted.map((network) => network.name)}
-              placeholder={selectorNetworksSorted[0].name}
-              onChange={() => console.log("TODO")}
-              disabled={false}
-              wide
-            /> */}
+        <div>
             <WelcomeAction
               title="Create a simple NFT Vault"
               subtitle={"Deploy a 1:10000 NFT-backed ERC20 token"}
@@ -147,7 +138,27 @@ function Landing({ selectorNetworks }) {
                 createError[0] !== null && createError[0] !== "no-account"
               }
             />
-            {/* <WelcomeAction
+          </div>
+      {/* <Split
+        primary={
+          <div>
+            <DropDown
+              items={selectorNetworksSorted.map((network) => network.name)}
+              placeholder={selectorNetworksSorted[0].name}
+              onChange={() => console.log("TODO")}
+              disabled={false}
+              wide
+            />
+            <WelcomeAction
+              title="Create a simple NFT Vault"
+              subtitle={"Deploy a 1:10000 NFT-backed ERC20 token"}
+              illustration={actionCreate}
+              onActivate={() => handleCreate(1)}
+              hasError={
+                createError[0] !== null && createError[0] !== "no-account"
+              }
+            />
+            <WelcomeAction
               title="Create a complex NFT fund"
               subtitle={"Make a Balancer pool comprised of simple funds"}
               illustration={actionOpen}
@@ -155,11 +166,11 @@ function Landing({ selectorNetworks }) {
               hasError={
                 createError[0] !== null && createError[0] !== "no-account"
               }
-            /> */}
+            />
           </div>
         }
-        secondary={<Suggestions suggestedFunds={suggestedFunds} />}
-      />
+        secondary={<Suggestions suggestedFunds={suggestedFunds} />
+      /> */}
       <SidePanel
         title={panelTitle}
         opened={panelOpened}

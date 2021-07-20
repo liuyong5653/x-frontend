@@ -87,6 +87,20 @@ function FundsIndex({ fundsData, balances, getSelection, setSelection }) {
     >
       <Header
         primary="Vaults"
+        secondary={
+          <div
+            css={`
+              button {
+                border-color: #241246;
+              }
+            `}
+          >
+            <Button
+              label="Create Vault"
+              onClick={() => history.push(`/create`)}
+            />
+          </div>
+        }
         // secondary={
         //   <div
         //     css={`
