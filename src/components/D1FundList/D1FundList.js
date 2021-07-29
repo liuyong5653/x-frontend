@@ -94,8 +94,9 @@ function D1FundList({ fundsData, balances }) {
       <FundsList
         fundsListData={(fundsData || []).filter(
           (elem) =>
-            !elem.isD2Vault &&
-            (elem.verified || isVaultIdFavorited(elem.vaultId))
+            !elem.isD2Vault 
+            //&&
+            // (elem.verified || isVaultIdFavorited(elem.vaultId))
         )}
         balances={balances}
       />

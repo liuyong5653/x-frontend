@@ -130,11 +130,11 @@ function D2FundView({ fundsData, balances }) {
 
   const handleMint = () => {
     console.log("TODO:");
-    /* setPanelTitle(`${fundData.fundToken.symbol} ▸ Mint`);
+    /* setPanelTitle(`${fundData.xToken.symbol} ▸ Mint`);
     setInnerPanel(
       <MintD2FundPanel
         vaultId={vaultId}
-        ticker={fundData.fundToken.symbol}
+        ticker={fundData.xToken.symbol}
         onContinue={() => {
           setPanelOpened(false);
         }}
@@ -152,13 +152,13 @@ function D2FundView({ fundsData, balances }) {
 
   const handleRedeem = () => {
     console.log("TODO:");
-    /* setPanelTitle(`${fundData.fundToken.symbol} ▸ Redeem`);
+    /* setPanelTitle(`${fundData.xToken.symbol} ▸ Redeem`);
     setInnerPanel();
     setInnerPanel(
       <RedeemD2FundPanel
         vaultId={vaultId}
-        address={fundData.fundToken.address}
-        ticker={fundData.fundToken.symbol}
+        address={fundData.xToken.address}
+        ticker={fundData.xToken.symbol}
         onContinue={() => {
           setPanelOpened(false);
         }}
@@ -282,9 +282,9 @@ function D2FundView({ fundsData, balances }) {
                 {
                   key: "Fund",
                   value: {
-                    name: fundData.fundToken.name,
-                    symbol: fundData.fundToken.symbol,
-                    address: fundData.fundToken.address,
+                    name: fundData.xToken.name,
+                    symbol: fundData.xToken.symbol,
+                    address: fundData.xToken.address,
                   },
                 },
 

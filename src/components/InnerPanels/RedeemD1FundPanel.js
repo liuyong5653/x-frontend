@@ -32,7 +32,7 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
   const { current: web3 } = useRef(new Web3(provider));
   const xStore = new web3.eth.Contract(XStore.abi, XSTORE);
   const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
-  const xToken = new web3.eth.Contract(XToken.abi, fundData.fundToken.address);
+  const xToken = new web3.eth.Contract(XToken.abi, fundData.xToken.address);
 
   const [amount, setAmount] = useState("");
 
@@ -96,12 +96,13 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
       });
   };
 
+  // TODO 全部授权了
   const handleApprove = () => {
     setTxHash(null);
     setTxReceipt(null);
     setTxIsApproval(true);
     xToken.methods
-      .approve(NFTX_PROXY, web3.utils.toWei(amount))
+      .approve(NFTX_PROXY, web3.utils.toWei((parseInt(amount)*10000)+''))
       .send(
         {
           from: account,
@@ -121,7 +122,7 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
   const isApproved = () =>
     allowance &&
     !isNaN(parseInt(amount)) &&
-    parseInt(amount) <= web3.utils.fromWei(allowance);
+    parseInt(amount)*10000 <= web3.utils.fromWei(allowance);
 
   if (!doneRedeeming && (!txHash || (txIsApproval && txReceipt))) {
     return (
@@ -151,8 +152,8 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
             ) : (
               <Button
                 label={`Approve ${
-                  !isNaN(parseInt(amount)) ? parseInt(amount) : ""
-                } ${fundData.fundToken.symbol}`}
+                  !isNaN(parseInt(amount)) ? parseInt(amount)*10000 : ""
+                } ${fundData.xToken.symbol}`}
                 wide={true}
                 disabled={!amount || !account}
                 onClick={handleApprove}
@@ -163,7 +164,7 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
         {/* // TODO 判断用户余额，如果超过余额提示余额不足 */}
         <Button
           label={`Redeem ${!isNaN(parseInt(amount)) ? parseInt(amount) : ""} ${
-            fundData.fundToken.symbol
+            fundData.asset.symbol
           }`}
           wide={true}
           disabled={!amount || !account || !isApproved()}

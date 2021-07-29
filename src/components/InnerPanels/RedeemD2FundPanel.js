@@ -34,7 +34,7 @@ function RedeemD2FundPanel({ fundData, balances, onContinue }) {
   const { current: web3 } = useRef(new Web3(provider));
   const xStore = new web3.eth.Contract(XStore.abi, addresses.xStore);
   const nftx = new web3.eth.Contract(Nftx.abi, addresses.nftxProxy);
-  const xToken = new web3.eth.Contract(XToken.abi, fundData.fundToken.address);
+  const xToken = new web3.eth.Contract(XToken.abi, fundData.xToken.address);
 
   const [amount, setAmount] = useState("");
 
@@ -140,7 +140,7 @@ function RedeemD2FundPanel({ fundData, balances, onContinue }) {
             margin-bottom: 15px;
           `}
         >
-          {`Every 1 ${fundData.fundToken.symbol} can redeem 1000 `}
+          {`Every 1 ${fundData.xToken.symbol} can redeem 1000 `}
           {balancerPools[fundData.asset.address] ? (
             <a
               href={`https://pools.balancer.exchange/#/pool/${
@@ -184,7 +184,7 @@ function RedeemD2FundPanel({ fundData, balances, onContinue }) {
                 const balanceData = balances.find((elem) => {
                   return (
                     elem.contract_address.toLowerCase() ===
-                    fundData.fundToken.address.toLowerCase()
+                    fundData.xToken.address.toLowerCase()
                   );
                 });
                 const _balance = (balanceData && balanceData.balance) || "0";
@@ -209,7 +209,7 @@ function RedeemD2FundPanel({ fundData, balances, onContinue }) {
               <Button
                 label={`Approve ${
                   !isNaN(parseFloat(amount)) ? parseFloat(amount) : ""
-                } ${fundData.fundToken.symbol}`}
+                } ${fundData.xToken.symbol}`}
                 wide={true}
                 disabled={!amount || !account || parseFloat(amount) === 0}
                 onClick={handleApprove}

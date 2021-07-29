@@ -295,7 +295,7 @@ function MintRequestPanel({ fundData, onContinue, onMintNow }) {
         />
         <Button
           label={`Request ${nftData.length > 0 ? nftData.length + " " : ""}${
-            fundData.fundToken.symbol
+            fundData.xToken.symbol
           }`}
           wide={true}
           disabled={
@@ -420,7 +420,7 @@ function MintRequestPanel({ fundData, onContinue, onMintNow }) {
         >
           {txIsApproval
             ? "Unapproval was successful"
-            : `${fundData.fundToken.symbol} requested successfully`}
+            : `${fundData.xToken.symbol} requested successfully`}
 
           <IconCheck
             css={`

@@ -58,13 +58,13 @@ function D1FundView({ fundsData, balances }) {
       if (isNaN(parseInt(_vaultId))) {
         setInvalidVid(true);
       }
-      setVaultId(parseInt(_vaultId));
+      setVaultId(_vaultId);
     }
   }, [location]);
 
   useEffect(() => {
     if (vaultId !== null && fundsData) {
-      const _fundData = fundsData.find((elem) => elem.vaultId === vaultId);
+      const _fundData = fundsData.find((elem) => elem.vaultId == vaultId);
       if (_fundData) {
         setFundData(_fundData);
       }
@@ -90,11 +90,11 @@ function D1FundView({ fundsData, balances }) {
   console.log("D1FundView vaultId===>"+vaultId)
 
   // const handleMint = () => {
-  //   setPanelTitle(`${fundData.fundToken.symbol} ▸ Mint`);
+  //   setPanelTitle(`${fundData.xToken.symbol} ▸ Mint`);
   //   setInnerPanel(
   //     <MintD1FundPanel
   //       vaultId={vaultId}
-  //       ticker={fundData.fundToken.symbol}
+  //       ticker={fundData.xToken.symbol}
   //       onContinue={() => {
   //         setPanelOpened(false);
   //       }}
@@ -111,11 +111,11 @@ function D1FundView({ fundsData, balances }) {
   // };
 
   // const handleMintRequest = () => {
-  //   setPanelTitle(`${fundData.fundToken.symbol} ▸ Request`);
+  //   setPanelTitle(`${fundData.xToken.symbol} ▸ Request`);
   //   setInnerPanel(
   //     <MintRequestPanel
   //       vaultId={vaultId}
-  //       ticker={fundData.fundToken.symbol}
+  //       ticker={fundData.xToken.symbol}
   //       onContinue={() => {
   //         setPanelOpened(false);
   //       }}
@@ -131,13 +131,13 @@ function D1FundView({ fundsData, balances }) {
   // };
 
   // const handleRedeem = () => {
-  //   setPanelTitle(`${fundData.fundToken.symbol} ▸ Redeem`);
+  //   setPanelTitle(`${fundData.xToken.symbol} ▸ Redeem`);
   //   setInnerPanel();
   //   setInnerPanel(
   //     <RedeemD1FundPanel
   //       vaultId={vaultId}
-  //       address={fundData.fundToken.address}
-  //       ticker={fundData.fundToken.symbol}
+  //       address={fundData.xToken.address}
+  //       ticker={fundData.xToken.symbol}
   //       onContinue={() => {
   //         setPanelOpened(false);
   //       }}
@@ -251,9 +251,9 @@ function D1FundView({ fundsData, balances }) {
                 {
                   key: "ERC20",
                   value: {
-                    name: fundData.fundToken.name,
-                    symbol: fundData.fundToken.symbol,
-                    address: fundData.fundToken.address,
+                    name: fundData.xToken.name,
+                    symbol: fundData.xToken.symbol,
+                    address: fundData.xToken.address,
                   },
                 },
 

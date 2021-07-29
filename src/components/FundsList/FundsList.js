@@ -74,7 +74,7 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
   };
 
   const fundData = (vaultId) =>
-    fundsListData.find((fund) => fund.vaultId === vaultId);
+    fundsListData.find((fund) => fund.vaultId == vaultId);
 
   const handleMint = (vaultId, ticker) => {
     if (!fundData(vaultId)) return;
@@ -138,7 +138,7 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
 
   const handleRedeem = (vaultId) => {
     const _fundData = fundData(vaultId);
-    setPanelTitle(`${_fundData.fundToken.symbol} ▸ Redeem`);
+    setPanelTitle(`${_fundData.xToken.symbol} ▸ Redeem`);
     setInnerPanel();
     setInnerPanel(
       // fundData(vaultId).isD2Vault ? (
@@ -163,7 +163,7 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
   };
 
   const getFundInfo = (vaultId) => {
-    return fundInfo.find((elem) => elem.vaultId === vaultId);
+    return fundInfo.find((elem) => elem.vaultId == vaultId);
   };
 
   return (
@@ -214,9 +214,9 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
         entries={fundsListData || []}
         entriesPerPage={50}
         renderEntry={(entry) => {
-          const { vaultId, fundToken, isFinalized } = entry;
-          const fundSymbol = fundToken.symbol;
-          const fundAddress = entry.fundToken.address;
+          const { vaultId, xToken, isFinalized } = entry;
+          const fundSymbol = xToken.symbol;
+          const fundAddress = entry.xToken.address;
           // console.log("entry", entry);
           const cells = [
             hideInspectButton ? (
@@ -237,7 +237,7 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
             </div>,
             <div>
               {truncateDecimal(
-                web3.utils.fromWei(fundToken.totalSupply.toString())
+                web3.utils.fromWei(xToken.totalSupply.toString())
               )}
             </div>,
             // <div>{entry.isD2Vault ? "D2" : "D1"}</div>,
@@ -288,7 +288,7 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
             // let _balance = balances.find(
             //   (elem) =>
             //     elem.contract_address.toLowerCase() ===
-            //     entry.fundToken.address.toLowerCase()
+            //     entry.xToken.address.toLowerCase()
             // );
 
             // cells.splice(       
@@ -313,12 +313,12 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
         renderEntryActions={(entry, index) => {
           const {
             vaultId,
-            fundToken,
+            xToken,
             // flipEligOnRedeem,
             // allowMintRequests,
           } = entry;
-          const fundSymbol = fundToken.symbol;
-          const fundAddress = entry.fundToken.address;
+          const fundSymbol = xToken.symbol;
+          const fundAddress = entry.xToken.address;
           return (
             <ContextMenu>
               <ContextMenuItem

@@ -4,6 +4,7 @@ import { BREAKPOINTS, useTheme, IconExternal, Info } from "@aragon/ui";
 import { useWallet } from "use-wallet";
 import throttle from "lodash.throttle";
 import axios from "axios";
+import {getAllVaults} from "../../utils";
 
 import TopBar from "../TopBar/TopBar";
 import Welcome from "../Welcome/Welcome";
@@ -74,167 +75,96 @@ function Site({ selectorNetworks }) {
     }
   };
 
-  const fetchFundsData = async () => {
-    // // console.log("fetching funds data...");
-    // const cleanFundsData = (inputData) => {
-    //   const data = inputData.map((elem) => {
-    //     const _fundInfo = fundInfo.find(
-    //       (fund) => fund.vaultId === elem.vaultId
-    //     );
-    //     elem.verified = _fundInfo && _fundInfo.verified;
-    //     return elem;
-    //   });
-    //   data.sort((a, b) => a.vaultId - b.vaultId);
-    //   // TODO 下面的不需要？？？
-    //   const punkFemale = data[15];
-    //   data.splice(15, 1);
-    //   data.splice(1, 0, punkFemale);
-    //   const punk = data[16];
-    //   data.splice(16, 1);
-    //   data.splice(0, 0, punk);
-    //   /* const mask = data[20];
-    //   data.splice(20, 1);
-    //   data.splice(19, 0, mask); */
-    //   return data;
-    // };
-    // /* const response = await axios({
-    //   url: "https://nftx.xyz/funds-data",
-    //   method: "get",
-    // }); */
+  const fetchVaultsData = async () => {
+    console.log("fetching vaults data...");
 
-    // // TODO 此处需要一个接口
-    // const response2 = await axios({
-    //   url: "https://nftx.ethereumdb.com/v1/vaults/",
-    //   method: "get",
-    // });
+    const _vaultsData = await getAllVaults()
+    setFundsData(_vaultsData);
 
-    // const _fundsData = cleanFundsData(response2.data);
+    // const _vaultsData = [
+    //   {
+    //     vaultId: '0',
+    //     manager: "0x0fb8eeda0139ee6F40d34C031D95D07f92f8e2Aa",
+    //     //nft 信息
+    //     asset: {
+    //       address: "0xAf901CaC6fFD4c9F87FE47f0c0B515405284CdcF",
+    //       name: 'PUNK-BASIC',
+    //       symbol: 'Punk-Basic'
+    //     },
+    //     // xtoken 信息
+    //     xToken: {
+    //       address: "0xa266615c411b183B739059aE859Db39Ea1239d9C",
+    //       name: "PUNK-BASIC-20",
+    //       symbol: "Punk-Basic-20",
+    //       totalSupply: 63000000000000000000
+    //     },
+    //     negateEligibility: false, //为false时，设置指定范围
+    //     // 注意下面的数组内都需要加''，否则fundData.eligibilities.includes(tokenId.toString()))会返回false
+    //     eligibilities: ['0','1','2','3'],    
+    //     eligibilityRange: [],        
+    //     holdings: ['0','1'],  // TODO 删除，现在不持有    
+    //     is1155: false,
+    //     isFinalized: true,
+    //     isClosed: false,
+    //     flipEligOnRedeem: false,
+    //     allowMintRequests: false,
 
-    // setFundsData(_fundsData);
+        
+   
+    //     // TODO 删除，价格单独从swap中拿
+    //     price: 36504.78520502378,
+    //     priceEth: 19.297241757470108,
+
+    //     // mintRequests:[],
+    //     // verified: true,
+    //     // tokenStandard721: true,
+    //     // tokenStandard1155: false,
+    //     // lastTrade: "2021-07-14T00:00:00.000Z",
+    //   },
+    //   {
+    //     vaultId: '1',
+    //     manager: "0x2896106AC731B9F04B36d00D8b169055C953ED84",
+    //     //nft 信息
+    //     asset: {
+    //       address: "0xAf901CaC6fFD4c9F87FE47f0c0B515405284CdcF",
+    //       name: 'PUNK-BASIC',
+    //       symbol: 'Punk-Basic'
+    //     },
+    //     // xtoken 信息
+    //     xToken: {
+    //       address: "0x50a6Cae376234A596E90D4bdA8E99315f006eD86",
+    //       name: "name20",
+    //       symbol: "symbol20",
+    //       totalSupply: 0
+    //     },
+    //     negateEligibility: true, //无范围，全都可以    但eligibilities若有值，里面的id即不可mint的id，即取反
+    //     eligibilities: [],
+    //     eligibilityRange: [],        
+    //     holdings: ['2'],
+    //     is1155: false,
+    //     isFinalized: false,
+    //     isClosed: false,
+    //     flipEligOnRedeem: false,
+    //     allowMintRequests: false,
 
 
+    //     price: null,
+    //     priceEth: null,
 
-    const _fundsData = [
-      {
-        //nft 信息
-        asset: {
-          address: "0x543AD7Ca4172c17384a8fB62dACc493A544F84fe",
-          name: 'PUNK-BASIC',
-          symbol: 'Punk-Basic'
-        },
-        // xtoken 信息
-        fundToken: {
-          address: "0x2BA89Ae98E9a07Ab31eC4fd952A6b6c0bf1860C2",
-          name: "PUNK-BASIC-20",
-          symbol: "Punk-Basic-20",
-          totalSupply: 63000000000000000000
-        },
-        negateEligibility: false, //为false时，设置指定范围
-        // 注意下面的数组内都需要加''，否则fundData.eligibilities.includes(tokenId.toString()))会返回false
-        eligibilities: ['0','1','2'],    
-        eligibilityRange: [],        
-        holdings: ['0','1','2'],  // TODO 删除，现在不持有    
+    //     // mintRequests:[],
+    //     // verified: true,
+    //     // tokenStandard721: true,
+    //     // tokenStandard1155: false,
+    //     // lastTrade: null,
+    //   },
+    // ]
 
-        is1155: false,
-        isClosed: false,
-        isFinalized: true,
-        lastTrade: "2021-07-14T00:00:00.000Z",
-        manager: "0x0fb8eeda0139ee6F40d34C031D95D07f92f8e2Aa",
-
-        price: 36504.78520502378,
-        priceEth: 19.297241757470108,
-        tokenStandard721: true,
-        tokenStandard1155: false,
-        vaultId: 0,
-
-        flipEligOnRedeem: false,
-        allowMintRequests: false,
-        mintRequests:[],
-        verified: true,
-        _id: "6038fc06cf2eb6951da25ddb",
-      },
-      {
-        //nft 信息
-        asset: {
-          address: "0x543AD7Ca4172c17384a8fB62dACc493A544F84fe",
-          name: 'PUNK-BASIC',
-          symbol: 'Punk-Basic'
-        },
-        // xtoken 信息
-        fundToken: {
-          address: "0x825e24d3ebeac4c827a608eb49618716827a4404",
-          name: "999",
-          symbol: "999",
-          totalSupply: 0
-        },
-        negateEligibility: true, //无范围，全都可以    但eligibilities若有值，里面的id即不可mint的id，即取反
-        eligibilities: [],
-        eligibilityRange: [],        
-        holdings: [],
-
-        is1155: false,
-        isClosed: false,
-        isFinalized: true,
-        lastTrade: null,
-        manager: "0x0fb8eeda0139ee6F40d34C031D95D07f92f8e2Aa",
-
-        price: null,
-        priceEth: null,
-        tokenStandard721: true,
-        tokenStandard1155: false,
-        vaultId: 4,
-
-        flipEligOnRedeem: false,
-        allowMintRequests: false,
-        mintRequests:[],
-        verified: true,
-        _id: "11111",
-      },
-      // {
-      //   allowMintRequests: false,
-      //   //nft 信息
-      //   asset: {
-      //     address: "0xb7F7F6C52F2e2fdb1963Eab30438024864c313F6",
-      //     name: 'Wrapped Cryptopunks',
-      //     symbol: 'WPUNKS'
-      //   },
-      //   // xtoken 信息
-      //   fundToken: {
-      //     address: "0x69BbE2FA02b4D90A944fF328663667DC32786385",
-      //     name: "Punk-Basic",
-      //     symbol: "PUNK-BASIC",
-      //     totalSupply: 63000000000000000000
-      //   },
-      //   eligibilities: [],
-      //   eligibilityRange: [],        
-      //   holdings: ['9647','5039','9174'],
-      //   flipEligOnRedeem: false,
-
-      //   is1155: false,
-      //   isClosed: false,
-      //   isD2Vault: false,
-      //   isFinalized: true,
-      //   lastTrade: "2021-07-14T00:00:00.000Z",
-      //   manager: "0xb5191DE5E9Ed5ce94176B7917430A8512e5Ad517",
-
-      //   mintRequests:[],
-      //   negateEligibility: true,
-      //   price: 36504.78520502378,
-      //   priceEth: 19.297241757470108,
-      //   tokenStandard721: true,
-      //   tokenStandard1155: false,
-      //   vaultId: 0,
-      //   verified: true,
-      //   _id: "6038fc06cf2eb6951da25ddb",
-      // },
-    ]
-
-    setFundsData(_fundsData);
+    // setFundsData(_vaultsData);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const checkAndFetchNewData = async () => {
-    fetchFundsData();
+    fetchVaultsData();
     fetchBalances();
   };
 

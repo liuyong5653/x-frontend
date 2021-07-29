@@ -349,8 +349,8 @@ function MintD1FundPanel({
           `}
         />
         <Button
-          label={`Mint ${nftData.length > 0 ? nftData.length + " " : ""}${
-            fundData.fundToken.symbol
+          label={`Mint ${nftData.length > 0 ? nftData.length*10000 + " " : ""}${
+            fundData.xToken.symbol
           }`}
           wide={true}
           disabled={
@@ -486,7 +486,7 @@ function MintD1FundPanel({
         >
           {txIsApproval
             ? "Unapproval was successful"
-            : `${fundData.fundToken.symbol} minted successfully`}
+            : `${fundData.xToken.symbol} minted successfully`}
 
           <IconCheck
             css={`

@@ -170,7 +170,7 @@ function MintD2FundPanel({ fundData, balances, onContinue }) {
             margin-bottom: 15px;
           `}
         >
-          {`Every 1 ${fundData.fundToken.symbol} requires 1000 `}
+          {`Every 1 ${fundData.xToken.symbol} requires 1000 `}
           {balancerPools[fundData.asset.address] ? (
             <a
               href={`https://pools.balancer.exchange/#/pool/${
@@ -255,7 +255,7 @@ function MintD2FundPanel({ fundData, balances, onContinue }) {
         <Button
           label={`Mint ${
             isNaN(parseFloat(amount)) ? "" : parseFloat(amount) / 1000 + " "
-          }${fundData.fundToken.symbol}`}
+          }${fundData.xToken.symbol}`}
           wide={true}
           disabled={isNaN(amount) || amount === "" || parseFloat(amount) === 0}
           onClick={handleMint}
@@ -302,7 +302,7 @@ function MintD2FundPanel({ fundData, balances, onContinue }) {
         >
           {txIsApproval
             ? "Unapproval was successful"
-            : `${fundData.fundToken.symbol} minted successfully`}
+            : `${fundData.xToken.symbol} minted successfully`}
 
           <IconCheck
             css={`

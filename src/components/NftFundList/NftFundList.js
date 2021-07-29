@@ -77,7 +77,7 @@ function NftFundList() {
       setTableEntries(getAllEntries());
     };
     getAllEntries().forEach((entry) => {
-      const fundToken = new web3.eth.Contract(XToken.abi, entry.address);
+      const xToken = new web3.eth.Contract(XToken.abi, entry.address);
       data[entry.vaultId] = {};
       resRemaining += 1;
       xStore.methods
@@ -89,7 +89,7 @@ function NftFundList() {
           allDone() && update(data);
         });
       resRemaining += 1;
-      fundToken.methods
+      xToken.methods
         .totalSupply()
         .call({ from: account })
         .then((retVal) => {
@@ -99,7 +99,7 @@ function NftFundList() {
         });
       if (account) {
         resRemaining += 1;
-        fundToken.methods
+        xToken.methods
           .balanceOf(account)
           .call({ from: account })
           .then((retVal) => {
