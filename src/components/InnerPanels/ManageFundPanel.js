@@ -60,10 +60,10 @@ function ManageFundPanel({
       .then((retVal) => setNftxAdmin(retVal));
   });
 
+  console.log("account===>"+ account)
   console.log("ManageFundPanel manager ====>" + manager)
   console.log("ManageFundPanel owner ====>" + nftxAdmin)
-  console.log((account !== manager && account !== nftxAdmin))
-
+  console.log("isFinalized="+isFinalized)
   // const handleChangeTokenName = () => {
   //   nftx.methods
   //     .changeTokenName(vaultId, newName)
@@ -131,7 +131,7 @@ function ManageFundPanel({
     console.log("handleSetNegateEligibility")
     console.log("vaultId====>",vaultId)
     console.log('shouldNegate.toLowerCase().includes("true")====>', shouldNegate.toLowerCase().includes("true"))
-
+  
     nftx.methods
       .setNegateEligibility(
         vaultId,
@@ -208,7 +208,7 @@ function ManageFundPanel({
             label={"Change Token Name"}
             wide={true}
             disabled={
-              isClosed || (account !== manager && account !== nftxAdmin)
+              isClosed || (account?.toLowerCase() !== manager?.toLowerCase() && account?.toLowerCase() !== nftxAdmin?.toLowerCase())
             }
             onClick={handleChangeTokenName}
             css={`
@@ -231,7 +231,7 @@ function ManageFundPanel({
             label={"Change Token Symbol"}
             wide={true}
             disabled={
-              isClosed || (account !== manager && account !== nftxAdmin)
+              isClosed || (account?.toLowerCase() !== manager?.toLowerCase() && account?.toLowerCase() !== nftxAdmin?.toLowerCase())
             }
             onClick={handleChangeTokenSymbol}
             css={`
@@ -263,7 +263,7 @@ function ManageFundPanel({
             label={"Set NFT Eligibility"}
             wide={true}
             disabled={
-              isClosed || (isFinalized && account !== nftxAdmin) || (account !== manager && account !== nftxAdmin)
+              isClosed || (isFinalized && account?.toLowerCase() !== nftxAdmin?.toLowerCase()) || (!isFinalized  && account?.toLowerCase() !== manager?.toLowerCase())
             }
             onClick={handleSetIsEligible}
             css={`
@@ -286,7 +286,7 @@ function ManageFundPanel({
             label={"Negate Eligibility"}
             wide={true}
             disabled={
-              isClosed || (isFinalized && account !== nftxAdmin) || (account !== manager && account !== nftxAdmin)
+              isClosed || (isFinalized && account?.toLowerCase() !== nftxAdmin?.toLowerCase()) || (!isFinalized && account?.toLowerCase() !== manager?.toLowerCase())
             }
             onClick={handleSetNegateEligibility}
             css={`
@@ -300,7 +300,7 @@ function ManageFundPanel({
             label={"Finalize Fund"}
             wide={true}
             disabled={
-              isClosed || isFinalized || (account !== manager && account !== nftxAdmin)
+              isClosed || isFinalized || (account?.toLowerCase() !== manager?.toLowerCase())
             }
             onClick={handleFinalize}
             css={`
@@ -314,7 +314,7 @@ function ManageFundPanel({
             label={"Close Fund"}
             wide={true}
             disabled={
-              isClosed || (account !== manager && account !== nftxAdmin)
+              isClosed || (isFinalized && account?.toLowerCase() !== nftxAdmin?.toLowerCase()) || (!isFinalized  && account?.toLowerCase() !== manager?.toLowerCase())
             }
             onClick={handleClose}
             css={`

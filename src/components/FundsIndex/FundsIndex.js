@@ -86,7 +86,7 @@ function FundsIndex({ fundsData, balances, getSelection, setSelection }) {
       `}
     >
       <Header
-        primary="Vaults"
+        primary="Pools"
         secondary={
           <div
             css={`
@@ -96,7 +96,7 @@ function FundsIndex({ fundsData, balances, getSelection, setSelection }) {
             `}
           >
             <Button
-              label="Create Vault"
+              label="Create Pool"
               onClick={() => history.push(`/create`)}
             />
           </div>

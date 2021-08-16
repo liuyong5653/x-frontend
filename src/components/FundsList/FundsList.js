@@ -172,7 +172,7 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
         status={fundsListData === null ? "loading" : "default"}
         fields={(() => {
           const fields = [
-            "VAULT",
+            "Pool",
             "Price",
             "Supply",
             // "Type",
@@ -237,7 +237,8 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
             </div>,
             <div>
               {truncateDecimal(
-                web3.utils.fromWei(xToken.totalSupply.toString())
+                xToken.totalSupply
+                // web3.utils.fromWei(xToken.totalSupply.toString())
               )}
             </div>,
             // <div>{entry.isD2Vault ? "D2" : "D1"}</div>,

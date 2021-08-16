@@ -61,7 +61,7 @@ function CreateErc20Panel({ onContinue }) {
         <TextInput
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="Name (e.g. Punk-Basic)"
+          placeholder="Name (e.g. Punk-20)"
           wide={true}
           css={`
             margin-bottom: 10px;
@@ -70,7 +70,7 @@ function CreateErc20Panel({ onContinue }) {
         <TextInput
           value={symbol}
           onChange={(event) => setSymbol(event.target.value)}
-          placeholder="Symbol (e.g. PUNK-BASIC)"
+          placeholder="Symbol (e.g. PUNK-20)"
           wide={true}
           css={`
             margin-bottom: 15px;

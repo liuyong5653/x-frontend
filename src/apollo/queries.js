@@ -18,9 +18,7 @@ export const ALL_VAULTS = gql`
       }
       negateEligibility
       eligibilities
-      eligibilityRange
       holdings
-      is1155
       isFinalized
       isClosed
       flipEligOnRedeem

@@ -73,7 +73,7 @@ function D1FundView({ fundsData, balances }) {
 
   const handleClickManage = () => {
     if (!fundData) return;
-    setPanelTitle(`Manage ${fundData.fund || "Vault"}`);
+    setPanelTitle(`Manage ${fundData.fund || "Pool"}`);
     setInnerPanel(
       <ManageFundPanel
         vaultId={vaultId}
@@ -189,7 +189,7 @@ function D1FundView({ fundsData, balances }) {
                 }
               `}
             >
-              Vaults
+              Pools
             </Link>
           </div>{" "}
           <div
@@ -211,12 +211,12 @@ function D1FundView({ fundsData, balances }) {
                 color: #9690c1;
               `}
             >
-              Vault #{vaultId}
+              Pool #{vaultId}
             </span>
           </div>
         </div>
         <Button
-          label="Manage Vault"
+          label="Manage Pool"
           disabled={vaultId==null}
           onClick={handleClickManage}
         />
@@ -283,29 +283,28 @@ function D1FundView({ fundsData, balances }) {
                   value: fundData.manager,
                 });
               }
-              // TODO 什么逻辑？？？？？？
-              if (!fundData.isClosed && !fundData.negateEligibility) {
-                arr.push({
-                  key: "Requests",
-                  value: fundData.flipEligOnRedeem
-                    ? "Required"
-                    : fundData.allowMintRequests
-                    ? "Allowed"
-                    : "Not allowed",
-                });
-              }
-              if (
-                (fundData.requests || []).length > 0 ||
-                fundData.allowMintRequests
-              ) {
-                arr.push({
-                  key: "Pending",
-                  value:
-                    !(fundData.requests || []).length === 0
-                      ? "<empty>"
-                      : (fundData.requests || []).join(", "),
-                });
-              }
+              // if (!fundData.isClosed && !fundData.negateEligibility) {
+              //   arr.push({
+              //     key: "Requests",
+              //     value: fundData.flipEligOnRedeem
+              //       ? "Required"
+              //       : fundData.allowMintRequests
+              //       ? "Allowed"
+              //       : "Not allowed",
+              //   });
+              // }
+              // if (
+              //   (fundData.requests || []).length > 0 ||
+              //   fundData.allowMintRequests
+              // ) {
+              //   arr.push({
+              //     key: "Pending",
+              //     value:
+              //       !(fundData.requests || []).length === 0
+              //         ? "<empty>"
+              //         : (fundData.requests || []).join(", "),
+              //   });
+              // }
               arr.push({
                 key: "Holdings",
                 value:

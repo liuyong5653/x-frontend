@@ -62,7 +62,7 @@ function Landing({ selectorNetworks }) {
       goToCreate()
     } */
       setPanelTitle(
-        'Create a Vault'
+        'Create a Pool'
         // degree === 1 ? "Create a D1 Fund (Step 1/2)" : "Create a D2 Fund"
       );
       setInnerPanel(

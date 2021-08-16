@@ -60,7 +60,7 @@ function CreateVaultPanel({ onContinue }) {
         <TextInput
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="Name (e.g. Punk-Basic)"
+          placeholder="Name (e.g. Punk-20)"
           wide={true}
           css={`
             margin-bottom: 10px;
@@ -69,7 +69,7 @@ function CreateVaultPanel({ onContinue }) {
         <TextInput
           value={symbol}
           onChange={(event) => setSymbol(event.target.value)}
-          placeholder="Symbol (e.g. PUNK-BASIC)"
+          placeholder="Symbol (e.g. PUNK-20)"
           wide={true}
           css={`
             margin-bottom: 10px;
@@ -85,8 +85,9 @@ function CreateVaultPanel({ onContinue }) {
           `}
         />
 
+
         <Button
-          label={!account ? '请先链接钱包' : "Create Fund"}
+          label={!account ? '请先链接钱包' : "Create Pool"}
           wide={true}
           disabled={!name || !symbol || !nftAddress || !account}
           onClick={handleCreate}
@@ -139,7 +140,7 @@ function CreateVaultPanel({ onContinue }) {
             margin-bottom: 20px;
           `}
         >
-          Vault created succesfully
+          Pool created succesfully
           <IconCheck
             css={`
               transform: translate(5px, 5px) scale(1.2);
@@ -148,7 +149,7 @@ function CreateVaultPanel({ onContinue }) {
           />
         </div>
         <Button
-          label="View Fund"
+          label="View Pools"
           wide={true}
           onClick={() =>
             onContinue(txReceipt.events.NewVault.returnValues.vaultId)

@@ -96,70 +96,23 @@ function Site({ selectorNetworks }) {
     //       address: "0xa266615c411b183B739059aE859Db39Ea1239d9C",
     //       name: "PUNK-BASIC-20",
     //       symbol: "Punk-Basic-20",
-    //       totalSupply: 63000000000000000000
+    //       totalSupply: 60000
     //     },
-    //     negateEligibility: false, //为false时，设置指定范围
+    //     negateEligibility: false, //为false时，设置指定范围       //为true，无范围，全都可以    但eligibilities若有值，里面的id即不可mint的id，即取反
     //     // 注意下面的数组内都需要加''，否则fundData.eligibilities.includes(tokenId.toString()))会返回false
     //     eligibilities: ['0','1','2','3'],    
-    //     eligibilityRange: [],        
     //     holdings: ['0','1'],  // TODO 删除，现在不持有    
-    //     is1155: false,
     //     isFinalized: true,
     //     isClosed: false,
     //     flipEligOnRedeem: false,
     //     allowMintRequests: false,
-
-        
    
     //     // TODO 删除，价格单独从swap中拿
     //     price: 36504.78520502378,
     //     priceEth: 19.297241757470108,
 
-    //     // mintRequests:[],
-    //     // verified: true,
-    //     // tokenStandard721: true,
-    //     // tokenStandard1155: false,
-    //     // lastTrade: "2021-07-14T00:00:00.000Z",
-    //   },
-    //   {
-    //     vaultId: '1',
-    //     manager: "0x2896106AC731B9F04B36d00D8b169055C953ED84",
-    //     //nft 信息
-    //     asset: {
-    //       address: "0xAf901CaC6fFD4c9F87FE47f0c0B515405284CdcF",
-    //       name: 'PUNK-BASIC',
-    //       symbol: 'Punk-Basic'
-    //     },
-    //     // xtoken 信息
-    //     xToken: {
-    //       address: "0x50a6Cae376234A596E90D4bdA8E99315f006eD86",
-    //       name: "name20",
-    //       symbol: "symbol20",
-    //       totalSupply: 0
-    //     },
-    //     negateEligibility: true, //无范围，全都可以    但eligibilities若有值，里面的id即不可mint的id，即取反
-    //     eligibilities: [],
-    //     eligibilityRange: [],        
-    //     holdings: ['2'],
-    //     is1155: false,
-    //     isFinalized: false,
-    //     isClosed: false,
-    //     flipEligOnRedeem: false,
-    //     allowMintRequests: false,
-
-
-    //     price: null,
-    //     priceEth: null,
-
-    //     // mintRequests:[],
-    //     // verified: true,
-    //     // tokenStandard721: true,
-    //     // tokenStandard1155: false,
-    //     // lastTrade: null,
-    //   },
+    //   }
     // ]
-
-    // setFundsData(_vaultsData);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
