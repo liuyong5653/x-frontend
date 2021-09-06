@@ -68,7 +68,9 @@ function TopBar({ status, solid }) {
               height: 100%;
             `}
           >
+            
             <AccountModule />
+
           </div>
           {/* <Button
             display="icon"

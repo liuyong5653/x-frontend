@@ -20,15 +20,11 @@ import {
 } from "@aragon/ui";
 import { useFavoriteFunds } from "../../contexts/FavoriteFundsContext";
 import MintD1FundPanel from "../InnerPanels/MintD1FundPanel";
-import MintD2FundPanel from "../InnerPanels/MintD2FundPanel";
 import MintRequestPanel from "../InnerPanels/MintRequestPanel";
 import RedeemD1FundPanel from "../InnerPanels/RedeemD1FundPanel";
-import RedeemD2FundPanel from "../InnerPanels/RedeemD2FundPanel";
 import CreateErc20Panel from "../InnerPanels/CreateErc20Panel";
-import CreateFundPanel from "../InnerPanels/CreateFundPanel";
 import ManageFundPanel from "../InnerPanels/ManageFundPanel";
 import Web3 from "web3";
-import Nftx from "../../contracts/NFTX.json";
 import XStore from "../../contracts/XStore.json";
 import XToken from "../../contracts/XToken.json";
 import ApproveNftsPanel from "../InnerPanels/ApproveNftsPanel";
@@ -82,17 +78,6 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
 //     return window.location.href = `https://app.nftx.org/mint/${vaultId}`;
 
     setPanelTitle(`${ticker} ▸ Mint`);
-    // if (fundData(vaultId).isD2Vault) {
-    //   setInnerPanel(
-    //     <MintD2FundPanel
-    //       fundData={fundData(vaultId)}
-    //       balances={balances}
-    //       onContinue={() => {
-    //         setPanelOpened(false);
-    //       }}
-    //     />
-    //   );
-    // } else {
     setInnerPanel(
       <MintD1FundPanel
         fundData={fundData(vaultId)}
@@ -141,15 +126,6 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
     setPanelTitle(`${_fundData.xToken.symbol} ▸ Redeem`);
     setInnerPanel();
     setInnerPanel(
-      // fundData(vaultId).isD2Vault ? (
-      //   <RedeemD2FundPanel
-      //     fundData={_fundData}
-      //     balances={balances}
-      //     onContinue={() => {
-      //       setPanelOpened(false);
-      //     }}
-      //   />
-      // ) : (
         <RedeemD1FundPanel
           fundData={_fundData}
           // balances={balances}
@@ -157,7 +133,6 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
             setPanelOpened(false);
           }}
         />
-      // )
     );
     setPanelOpened(true);
   };
@@ -315,7 +290,6 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
           const {
             vaultId,
             xToken,
-            // flipEligOnRedeem,
             // allowMintRequests,
           } = entry;
           const fundSymbol = xToken.symbol;
@@ -325,20 +299,10 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
               <ContextMenuItem
                 onClick={() => {
                   handleMint(vaultId, fundSymbol);
-                  // if (flipEligOnRedeem) {
-                  //   handleMintRequest(vaultId, fundSymbol);
-                  // } else {
-                  //   handleMint(vaultId, fundSymbol);
-                  // }
                 }}
                 css={account ? `` : `cursor: default; opacity: 0.3;`}
               >
                 Mint
-                {/* {(flipEligOnRedeem
-                  ? "Mint Request"
-                  : allowMintRequests
-                  ? "Mint / Request"
-                  : "") || "Mint"} */}
               </ContextMenuItem>
               <ContextMenuItem
                 onClick={() => handleRedeem(vaultId, fundSymbol, fundAddress)}

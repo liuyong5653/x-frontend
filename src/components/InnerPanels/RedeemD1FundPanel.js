@@ -14,7 +14,7 @@ import Loader from "react-loader-spinner";
 import HashField from "../HashField/HashField";
 import { useFavoriteNFTs } from "../../contexts/FavoriteNFTsContext";
 import XStore from "../../contracts/XStore.json";
-import Nftx from "../../contracts/NFTXv11.json";
+import Nftx from "../../contracts/NFTX.json";
 import XToken from "../../contracts/XToken.json";
 
 const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY

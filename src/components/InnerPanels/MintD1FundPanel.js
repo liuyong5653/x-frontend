@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 import Web3 from "web3";
 import { useWallet } from "use-wallet";
-import Nftx from "../../contracts/NFTXv11.json";
+import Nftx from "../../contracts/NFTX.json";
 import XStore from "../../contracts/XStore.json";
 import KittyCore from "../../contracts/KittyCore.json";
 import IErc721 from "../../contracts/IERC721.json";
@@ -244,7 +244,7 @@ function MintD1FundPanel({
     setTxReceipt(null);
     const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
     nftx.methods
-      .mint(fundData.vaultId, tokenIdsArr, "0")
+      .mint(fundData.vaultId, tokenIdsArr)
       .send(
         {
           from: account,

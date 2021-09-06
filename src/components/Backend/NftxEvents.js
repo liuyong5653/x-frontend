@@ -3,7 +3,7 @@ import { DataView } from "@aragon/ui";
 import Web3 from "web3";
 import { useWallet } from "use-wallet";
 import HashField from "../HashField/HashField";
-import Nftx from "../../contracts/NFTXv11.json";
+import Nftx from "../../contracts/NFTX.json";
 
 const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
 const XSTORE = process.env.REACT_APP_XSTORE

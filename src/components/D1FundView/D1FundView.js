@@ -12,7 +12,7 @@ import {
   IconExternal,
 } from "@aragon/ui";
 import XStore from "../../contracts/XStore.json";
-import Nftx from "../../contracts/NFTXv11.json";
+import Nftx from "../../contracts/NFTX.json";
 import XToken from "../../contracts/XToken.json";
 import IErc721Plus from "../../contracts/IERC721Plus.json";
 
@@ -283,16 +283,6 @@ function D1FundView({ fundsData, balances }) {
                   value: fundData.manager,
                 });
               }
-              // if (!fundData.isClosed && !fundData.negateEligibility) {
-              //   arr.push({
-              //     key: "Requests",
-              //     value: fundData.flipEligOnRedeem
-              //       ? "Required"
-              //       : fundData.allowMintRequests
-              //       ? "Allowed"
-              //       : "Not allowed",
-              //   });
-              // }
               // if (
               //   (fundData.requests || []).length > 0 ||
               //   fundData.allowMintRequests

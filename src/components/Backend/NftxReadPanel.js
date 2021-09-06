@@ -8,7 +8,7 @@ import {
 } from "@aragon/ui";
 import Web3 from "web3";
 import { useWallet } from "use-wallet";
-import Nftx from "../../contracts/NFTXv11.json";
+import Nftx from "../../contracts/NFTX.json";
 import Loader from "react-loader-spinner";
 import HashField from "../HashField/HashField";
 import { useFavoriteNFTs } from "../../contexts/FavoriteNFTsContext";

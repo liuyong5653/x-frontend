@@ -21,8 +21,9 @@ export const ALL_VAULTS = gql`
       holdings
       isFinalized
       isClosed
-      flipEligOnRedeem
-      allowMintRequests
+      is1155
+      rangeStart
+      rangeEnd
       createdAtTimestamp
       createdAtBlockNumber
     }

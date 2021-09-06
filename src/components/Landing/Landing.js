@@ -4,16 +4,13 @@ import { network } from "../../environment";
 import WelcomeAction from "../WelcomeAction/WelcomeAction";
 import Suggestions from "./Suggestions/Suggestions";
 import { useSuggestedFunds } from "../../suggested-funds";
-// import CreateD1PanelA from "../CreateD1Panel/CreateD1PanelA";
-import CreateD2Panel from "../CreateD2Panel/CreateD2Panel";
-import CreateErc20Panel from "../InnerPanels/CreateErc20Panel";
-import CreateFundPanel from "../InnerPanels/CreateFundPanel";
 import CreateVaultPanel from "../InnerPanels/CreateVaultPanel";
 import { useFavoriteFunds } from "../../contexts/FavoriteFundsContext";
 
 import actionCreate from "./assets/action-create.png";
 import actionOpen from "./assets/action-open.png";
 
+// 未用到，集成在FundsIndex中
 function Landing({ selectorNetworks }) {
   // const selectorNetworksSorted = useMemo(() => {
   //   return selectorNetworks
@@ -75,7 +72,7 @@ function Landing({ selectorNetworks }) {
             //   vaultId: vaultId,
             // });
             setPanelOpened(false);
-            // TODO 应该跳到对应的页面？而不是vault list？？？
+            // TODO 应该跳到对应的页面
             setTimeout(() => {
               if (window.location.hash !== "/") {
                 window.location.hash = "/";
@@ -83,37 +80,6 @@ function Landing({ selectorNetworks }) {
             }, 400);
             }}
         />
-        // degree === 1 ? (
-        //   <CreateErc20Panel
-        //     onContinue={(tokenAddress, tokenSymbol) => {
-        //       setPanelOpened(false);
-        //       setTimeout(() => {
-        //         setPanelTitle("Create a D1 Fund (Step 2/2)");
-        //         setInnerPanel(
-        //           <CreateFundPanel
-        //             tokenAddress={tokenAddress}
-        //             onContinue={(vaultId) => {
-        //               addFavorite({
-        //                 ticker: tokenSymbol,
-        //                 address: tokenAddress,
-        //                 vaultId: vaultId,
-        //               });
-        //               setPanelOpened(false);
-        //               setTimeout(() => {
-        //                 if (window.location.hash !== "/") {
-        //                   window.location.hash = "/";
-        //                 }
-        //               }, 400);
-        //             }}
-        //           />
-        //         );
-        //         setPanelOpened(true);
-        //       }, 500);
-        //     }}
-        //   />
-        // ) : (
-        //   <CreateD2Panel />
-        // )
       );
       setPanelOpened(true);
     },

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useWallet } from "use-wallet";
 import PropTypes from "prop-types";
@@ -18,10 +18,10 @@ import {
   Info,
   DropDown,
 } from "@aragon/ui";
+import CreateVaultPanel from "../InnerPanels/CreateVaultPanel";
 import { useFavoriteFunds } from "../../contexts/FavoriteFundsContext";
 
 import CreateErc20Panel from "../InnerPanels/CreateErc20Panel";
-import CreateFundPanel from "../InnerPanels/CreateFundPanel";
 
 import Web3 from "web3";
 
@@ -36,15 +36,41 @@ function FundsIndex({ fundsData, balances, getSelection, setSelection }) {
   const history = useHistory();
   const { account } = useWallet();
   const injected = window.ethereum;
-  // const provider =
-  //   injected && injected.chainId === "0x1"
-  //     ? injected
-  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
 
   const provider = injected
   const { current: web3 } = useRef(new Web3(provider));
 
   const featuredVaultIds = [16];
+
+  const [panelTitle, setPanelTitle] = useState("");
+  const [panelOpened, setPanelOpened] = useState(false);
+  const [innerPanel, setInnerPanel] = useState(<div></div>);
+
+  const handleCreate = useCallback(
+    () => {
+      setPanelTitle(
+        'Create a Pool'
+      );
+      setInnerPanel(
+        <CreateVaultPanel   
+          onContinue={(vaultId) => {
+            console.log("create Pool success, vaultId="+vaultId)
+            setPanelOpened(false);
+            setTimeout(() => {
+              console.log("window.location.hash="+window.location.hash)
+              // if (window.location.hash !== "/") {
+              window.location.hash = "/fund/"+vaultId;
+              // }
+            }, 400);
+            }}
+        />
+      );
+      setPanelOpened(true);
+    },
+    [
+      /* account, balance, goToCreate, isContractAccount */
+    ]
+  );
 
   const getVisibleFundsData = () => {
     if (!fundsData) return null;
@@ -97,7 +123,7 @@ function FundsIndex({ fundsData, balances, getSelection, setSelection }) {
           >
             <Button
               label="Create Pool"
-              onClick={() => history.push(`/create`)}
+              onClick={() => handleCreate()}
             />
           </div>
         }
@@ -126,6 +152,14 @@ function FundsIndex({ fundsData, balances, getSelection, setSelection }) {
         // }
       />
       <FundsList fundsListData={getVisibleFundsData()} balances={balances} />
+      
+      <SidePanel
+        title={panelTitle}
+        opened={panelOpened}
+        onClose={() => setPanelOpened(false)}
+      >
+        {innerPanel}
+      </SidePanel>
     </div>
   );
 }

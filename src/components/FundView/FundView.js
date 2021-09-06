@@ -3,10 +3,7 @@ import { useWallet } from "use-wallet";
 import { useLocation, Link } from "react-router-dom";
 import Web3 from "web3";
 import XStore from "../../contracts/XStore.json";
-// import D1FundViewOld from "../D1FundView/D1FundView_Old";
 import D1FundView from "../D1FundView/D1FundView";
-import D2FundView from "../D2FundView/D2FundView";
-// import D2FundView from '../D2FundView/D2FundView';
 import { Button, DataView, textStyle } from "@aragon/ui";
 
 const XSTORE = process.env.REACT_APP_XSTORE
@@ -99,7 +96,7 @@ function FundView({ fundsData, balances }) {
                   }
                 `}
               >
-                Vaults
+                Pools
               </Link>
             </div>{" "}
             <div
@@ -121,7 +118,7 @@ function FundView({ fundsData, balances }) {
                   color: #9690c1;
                 `}
               >
-                Vault #{vaultId}
+                Pool #{vaultId}
               </span>
             </div>
           </div>

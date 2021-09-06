@@ -8,15 +8,13 @@ import {
 } from "@aragon/ui";
 import Web3 from "web3";
 import { useWallet } from "use-wallet";
-import Nftx from "../../contracts/NFTXv11.json";
+import Nftx from "../../contracts/NFTX.json";
 import Loader from "react-loader-spinner";
 import HashField from "../HashField/HashField";
 
 const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
 
 function CreateVaultPanel({ onContinue }) {
-  console.log('CreateVaultPanel NFTX_PROXY====>'+NFTX_PROXY)
-
   // TODO 判断若没有链接钱包，点击时先链接钱包
   const { account } = useWallet();
 
@@ -25,6 +23,7 @@ function CreateVaultPanel({ onContinue }) {
   const [name, setName] = useState("");
   const [symbol, setSymbol] = useState("");
   const [nftAddress, setNftAddress] = useState("");
+  const [is1155, setIs1155] = useState("");
 
   const [txHash, setTxHash] = useState(null);
   const [txReceipt, setTxReceipt] = useState(null);
@@ -33,8 +32,10 @@ function CreateVaultPanel({ onContinue }) {
   const handleCreate = () => {
     const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
     // window.nftx = nftx;
+
+    // TODO nftAddress支持NEW格式并且判断是否正确
     nftx.methods
-      .createVault(name, symbol, nftAddress, false)
+      .createVault(name, symbol, nftAddress, is1155.toLowerCase().includes("true"), true)
       .send(
         {
           from: account,
@@ -81,15 +82,23 @@ function CreateVaultPanel({ onContinue }) {
           placeholder="NFT contract address (e.g. 0x0bf7...D63a)"
           wide={true}
           css={`
-            margin-bottom: 15px;
+            margin-bottom: 10px;
           `}
         />
-
+        <TextInput
+            value={is1155}
+            onChange={(event) => setIs1155(event.target.value)}
+            placeholder="is 1155 ? (bool, e.g. false)"
+            wide={true}
+            css={`
+              margin-bottom: 15px;
+            `}
+        />
 
         <Button
           label={!account ? '请先链接钱包' : "Create Pool"}
           wide={true}
-          disabled={!name || !symbol || !nftAddress || !account}
+          disabled={!name || !symbol || !nftAddress || !is1155 || !account}
           onClick={handleCreate}
         />
       </div>

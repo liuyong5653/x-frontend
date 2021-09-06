@@ -9,12 +9,9 @@ import {getAllVaults} from "../../utils";
 import TopBar from "../TopBar/TopBar";
 import Welcome from "../Welcome/Welcome";
 import RoundButton from "./RoundButton/RoundButton";
-import Landing from "../Landing/Landing";
 import FundsIndex from "../FundsIndex/FundsIndex";
-import D1FundList from "../D1FundList/D1FundList";
 import Backend from "../Backend/Backend";
 import FundView from "../FundView/FundView";
-import Bounties from "../Bounties/Bounties";
 import Tutorial from "../Tutorial/Tutorial";
 import fundInfo from "../../data/fundInfo.json";
 
@@ -77,40 +74,19 @@ function Site({ selectorNetworks }) {
 
   const fetchVaultsData = async () => {
     console.log("fetching vaults data...");
-
     const _vaultsData = await getAllVaults()
     setFundsData(_vaultsData);
-
-    // const _vaultsData = [
+    // [
     //   {
-    //     vaultId: '0',
-    //     manager: "0x0fb8eeda0139ee6F40d34C031D95D07f92f8e2Aa",
-    //     //nft 信息
-    //     asset: {
-    //       address: "0xAf901CaC6fFD4c9F87FE47f0c0B515405284CdcF",
-    //       name: 'PUNK-BASIC',
-    //       symbol: 'Punk-Basic'
-    //     },
-    //     // xtoken 信息
-    //     xToken: {
-    //       address: "0xa266615c411b183B739059aE859Db39Ea1239d9C",
-    //       name: "PUNK-BASIC-20",
-    //       symbol: "Punk-Basic-20",
-    //       totalSupply: 60000
-    //     },
+    //     ....
     //     negateEligibility: false, //为false时，设置指定范围       //为true，无范围，全都可以    但eligibilities若有值，里面的id即不可mint的id，即取反
     //     // 注意下面的数组内都需要加''，否则fundData.eligibilities.includes(tokenId.toString()))会返回false
     //     eligibilities: ['0','1','2','3'],    
-    //     holdings: ['0','1'],  // TODO 删除，现在不持有    
-    //     isFinalized: true,
-    //     isClosed: false,
-    //     flipEligOnRedeem: false,
-    //     allowMintRequests: false,
+    //     holdings: ['0','1'], 
    
     //     // TODO 删除，价格单独从swap中拿
     //     price: 36504.78520502378,
     //     priceEth: 19.297241757470108,
-
     //   }
     // ]
   };
@@ -125,7 +101,6 @@ function Site({ selectorNetworks }) {
   useEffect(() => {
     fetchBalances();
     // console.log("TODO: get balance updates using websocket");
-    // https://www.covalenthq.com/docs/api/#post-/v1/{chainId}/address/{address}/register/
     const interval = setInterval(async () => {
       fetchBalances();
     }, 20000);
@@ -141,11 +116,8 @@ function Site({ selectorNetworks }) {
     return () => clearInterval(interval);
   }, []);
 
-  // check for balances
   // console.log('FundsData======>')
   // console.log(fundsData)
-  // console.log(fundsData ? fundsData[0] : 0)
-
   // console.log('Balances======>')
   // console.log(balances)
 
@@ -171,113 +143,6 @@ function Site({ selectorNetworks }) {
           `}
         >
           <Welcome />
-          {/* <div
-            css={`
-              display: flex;
-              justify-content: center;
-              transform: translateY(-24px);
-            `}
-          >
-            <RoundButton text="Homepage" link="/" />
-            <a
-              href="https://docs.nftx.org/tutorials/"
-              target="_blank"
-              rel="noreferrer"
-              css={`
-                text-decoration: none;
-                margin: 0 10px;
-              `}
-            >
-              <RoundButton
-                text={(
-                  <div css={`
-                    position: relative;
-                    padding-left: 1px;
-                    padding-right: 26px;
-                  `}>
-                    {'TUTORIALS'}
-                    <div
-                      css={`
-                        display: inline-block;
-                        position: absolute;
-                        right: -5px;
-                        bottom: -5px;
-                      `}
-                    >
-                      <IconExternal />
-                    </div>
-                  </div>
-                )}
-              />
-            </a>
-            <a
-              href="https://docs.nftx.org"
-              target="_blank"
-              rel="noreferrer"
-              css={`
-                text-decoration: none;
-                margin: 0 10px;
-              `}
-            >
-              <RoundButton
-                text={
-                  <div
-                    css={`
-                      position: relative;
-                      padding-left: 1px;
-                      padding-right: 26px;
-                    `}
-                  >
-                    DOCS
-                    <div
-                      css={`
-                        display: inline-block;
-                        position: absolute;
-                        right: -5px;
-                        bottom: -5px;
-                      `}
-                    >
-                      <IconExternal />
-                    </div>
-                  </div>
-                }
-              />
-            </a>
-            <a
-              href="https://gallery.nftx.org"
-              target="_blank"
-              rel="noreferrer"
-              css={`
-                text-decoration: none;
-                margin: 0 10px;
-              `}
-            >
-              <RoundButton
-                text={
-                  <div
-                    css={`
-                      position: relative;
-                      padding-left: 1px;
-                      padding-right: 26px;
-                    `}
-                  >
-                    Gallery
-                    <div
-                      css={`
-                        display: inline-block;
-                        position: absolute;
-                        right: -5px;
-                        bottom: -5px;
-                      `}
-                    >
-                      <IconExternal />
-                    </div>
-                  </div>
-                }
-              />
-            </a>
-
-          </div> */}
 
           <div
             css={`
@@ -287,11 +152,6 @@ function Site({ selectorNetworks }) {
               margin-bottom: 25px;
             `}
           >
-            <Route path="/create">
-              {/* <Landing selectorNetworks={selectorNetworks} /> */}
-              <Landing />
-            </Route>
-           
 
             <Route path="/" exact>
               <FundsIndex
@@ -310,10 +170,12 @@ function Site({ selectorNetworks }) {
             <Route path="/tutorial">
               <Tutorial />
             </Route>
-            {/* <Route path="/bounties">
-              <Bounties />
-            </Route>
-            <Route path="/bounties"></Route> */}
+
+            {/* 创建集成在FundsIndex中
+              <Route path="/create">
+              // <Landing selectorNetworks={selectorNetworks} />
+              <Landing />
+            </Route> */}
           </div>
           {/* <div
             className="footer"

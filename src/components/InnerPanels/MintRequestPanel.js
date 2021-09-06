@@ -9,7 +9,7 @@ import {
 } from "@aragon/ui";
 import Web3 from "web3";
 import { useWallet } from "use-wallet";
-import Nftx from "../../contracts/NFTXv11.json";
+import Nftx from "../../contracts/NFTX.json";
 import XStore from "../../contracts/XStore.json";
 import IErc721 from "../../contracts/IERC721.json";
 import KittyCore from "../../contracts/KittyCore.json";
@@ -190,25 +190,25 @@ function MintRequestPanel({ fundData, onContinue, onMintNow }) {
     });
 
   const handleRequest = () => {
-    setTxIsApproval(false);
-    setTxHash(null);
-    setTxReceipt(null);
-    const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
-    nftx.methods
-      .requestMint(fundData.vaultId, tokenIdsArr)
-      .send(
-        {
-          from: account,
-        },
-        (error, txHash) => {}
-      )
-      .on("error", (error) => setTxError(error))
-      .on("transactionHash", (txHash) => setTxHash(txHash))
-      .on("receipt", (receipt) => {
-        setDoneRequesting(true);
-        setTxReceipt(receipt);
-        console.log(receipt);
-      });
+    // setTxIsApproval(false);
+    // setTxHash(null);
+    // setTxReceipt(null);
+    // const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
+    // nftx.methods
+    //   .requestMint(fundData.vaultId, tokenIdsArr)
+    //   .send(
+    //     {
+    //       from: account,
+    //     },
+    //     (error, txHash) => {}
+    //   )
+    //   .on("error", (error) => setTxError(error))
+    //   .on("transactionHash", (txHash) => setTxHash(txHash))
+    //   .on("receipt", (receipt) => {
+    //     setDoneRequesting(true);
+    //     setTxReceipt(receipt);
+    //     console.log(receipt);
+    //   });
   };
 
   const handleViewNFT = () => {
