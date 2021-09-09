@@ -19,10 +19,8 @@ import {
   Help,
 } from "@aragon/ui";
 import { useFavoriteFunds } from "../../contexts/FavoriteFundsContext";
-import MintD1FundPanel from "../InnerPanels/MintD1FundPanel";
-import MintRequestPanel from "../InnerPanels/MintRequestPanel";
-import RedeemD1FundPanel from "../InnerPanels/RedeemD1FundPanel";
-import CreateErc20Panel from "../InnerPanels/CreateErc20Panel";
+import MintFundPanel from "../InnerPanels/MintFundPanel";
+import RedeemFundPanel from "../InnerPanels/RedeemFundPanel";
 import ManageFundPanel from "../InnerPanels/ManageFundPanel";
 import Web3 from "web3";
 import XStore from "../../contracts/XStore.json";
@@ -79,54 +77,23 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
 
     setPanelTitle(`${ticker} ▸ Mint`);
     setInnerPanel(
-      <MintD1FundPanel
+      <MintFundPanel
         fundData={fundData(vaultId)}
         // balances={balances}
         onContinue={() => {
           setPanelOpened(false);
         }}
-        // allowMintRequests={fundData(vaultId).allowMintRequests}
-        // onMakeRequest={() => {
-        //   setPanelOpened(false);
-        //   setTimeout(() => {
-        //     handleMintRequest(vaultId, ticker);
-        //   }, 500);
-        // }}
       />
     );
-    // }
-
     setPanelOpened(true);
   };
-
-  // const handleMintRequest = (vaultId, ticker) => {
-  //   if (!fundData(vaultId)) return;
-  //   // quickest and easiest way?
-  //   // return window.location.href = `https://app.nftx.org/mint/${vaultId}`;
-  //   setPanelTitle(`${ticker} ▸ Request`);
-  //   setInnerPanel(
-  //     <MintRequestPanel
-  //       fundData={fundData(vaultId)}
-  //       onContinue={() => {
-  //         setPanelOpened(false);
-  //       }}
-  //       onMintNow={() => {
-  //         setPanelOpened(false);
-  //         setTimeout(() => {
-  //           handleMint(vaultId, ticker);
-  //         }, 500);
-  //       }}
-  //     />
-  //   );
-  //   setPanelOpened(true);
-  // };
 
   const handleRedeem = (vaultId) => {
     const _fundData = fundData(vaultId);
     setPanelTitle(`${_fundData.xToken.symbol} ▸ Redeem`);
     setInnerPanel();
     setInnerPanel(
-        <RedeemD1FundPanel
+        <RedeemFundPanel
           fundData={_fundData}
           // balances={balances}
           onContinue={() => {
@@ -147,9 +114,11 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
         status={fundsListData === null ? "loading" : "default"}
         fields={(() => {
           const fields = [
-            "Pool",
-            "Price",
-            "Supply",
+            "NFT / NRC6",
+            "NFTS IN POOL",
+            "TRADE $NRC6",
+            "LIQUIDITY",
+            "FLOOR PRICE",
             // "Type",
             // <div>
             //   <div
@@ -178,24 +147,24 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
             // </div>,
             // "",
           ];
-          // TODO 如何获得balances？？？
+          // TODO 获得balances
           // if (account && balances) {
           if (account) {         
-            // fields.splice(5, 0, "Bal");
-            fields.splice(3, 0, "Bal");
+            fields.splice(5, 0, "Bal");
           }
           return fields;
         })()}
         entries={fundsListData || []}
         entriesPerPage={50}
         renderEntry={(entry) => {
-          const { vaultId, xToken, isFinalized } = entry;
+          const { vaultId, asset, xToken } = entry;
+          const nftSymbol = asset.symbol;
           const fundSymbol = xToken.symbol;
           const fundAddress = entry.xToken.address;
           // console.log("entry", entry);
           const cells = [
             hideInspectButton ? (
-              <div>{fundSymbol}</div>
+              <div>{nftSymbol} / {fundSymbol}</div>
             ) : (
               <Link
                 css={`
@@ -203,19 +172,45 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
                 `}
                 to={`fund/${vaultId}`}
               >
-                {fundSymbol}
+                {nftSymbol} / {fundSymbol}
               </Link>
             ),
             <div>
-              {(entry.priceEth && truncateDecimal(entry.priceEth.toString())) ||
-                "TBD"}
+              {(entry.holdings || []).length}
             </div>,
+            // <Link
+            //   css={`
+            //     text-decoration: none;
+            //   `}
+            //   to={`https://info.newswap.org/`}
+            // >
+            //   NewSwap
+            // </Link>,
+            <a
+              href= {"https://app.newswap.org/#/swap?inputCurrency=NEW&outputCurrency=" + xToken.address}
+              target="_blank"
+              rel="noreferrer"            
+            >
+              NewSwap
+            </a>,
+            <a
+              href="https://info.newswap.org/"
+              target="_blank"
+              rel="noreferrer"            
+            >
+              $0.00
+            </a>,
             <div>
-              {truncateDecimal(
-                xToken.totalSupply
-                // web3.utils.fromWei(xToken.totalSupply.toString())
-              )}
+              {(entry.priceEth && truncateDecimal(entry.priceEth.toString())) ||
+                "TBD"
+              }
             </div>,
+            // <div>
+            //   {truncateDecimal(
+            //     xToken.totalSupply
+            //     // web3.utils.fromWei(xToken.totalSupply.toString())
+            //   )}
+            // </div>,
             // <div>{entry.isD2Vault ? "D2" : "D1"}</div>,
             // <div>
             //   <div
@@ -277,7 +272,7 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
             //   </div>
             // );
             cells.splice(       
-              3,  // 5,
+              5,
               0,
               <div>
                 0

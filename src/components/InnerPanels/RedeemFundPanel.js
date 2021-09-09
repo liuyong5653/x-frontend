@@ -16,19 +16,16 @@ import { useFavoriteNFTs } from "../../contexts/FavoriteNFTsContext";
 import XStore from "../../contracts/XStore.json";
 import Nftx from "../../contracts/NFTX.json";
 import XToken from "../../contracts/XToken.json";
+import BigNumber from 'bignumber.js'
+import { ethers } from 'ethers'
+import useTokenBalance from '../../hooks/useTokenBalance'
 
 const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
 const XSTORE = process.env.REACT_APP_XSTORE
 
-function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
+function RedeemFundPanel({ fundData, ticker, onContinue }) {
   const { account } = useWallet();
-  const injected = window.ethereum;
-  // const provider =
-  //   injected && injected.chainId === "0x1"
-  //     ? injected
-  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
-
-  const provider = injected
+  const provider = window.ethereum;
   const { current: web3 } = useRef(new Web3(provider));
   const xStore = new web3.eth.Contract(XStore.abi, XSTORE);
   const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
@@ -36,7 +33,7 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
 
   const [amount, setAmount] = useState("");
 
-  const [allowance, setAllowance] = useState(null);
+  const [allowance, setAllowance] = useState(new BigNumber(0))
   const [doneRedeeming, setDoneRedeeming] = useState(false);
   const [nftIdsArr, setNftIdsArr] = useState(null);
 
@@ -44,6 +41,9 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
   const [txHash, setTxHash] = useState(null);
   const [txReceipt, setTxReceipt] = useState(null);
   const [txError, setTxError] = useState(null);
+
+  const tokenBalance = useTokenBalance(fundData.xToken.address)
+  // console.log("RedeemFundPanel tokenBalance ====> "+ tokenBalance.toNumber())
 
   useEffect(() => {
     fetchAllowance();
@@ -54,7 +54,7 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
       xToken.methods
         .allowance(account, NFTX_PROXY)
         .call({ from: account })
-        .then((retVal) => setAllowance(retVal));
+        .then((retVal) => setAllowance(new BigNumber(retVal)));
   };
 
   const handleRedeem = () => {
@@ -96,13 +96,12 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
       });
   };
 
-  // TODO 全部授权了
   const handleApprove = () => {
     setTxHash(null);
     setTxReceipt(null);
     setTxIsApproval(true);
     xToken.methods
-      .approve(NFTX_PROXY, web3.utils.toWei((parseInt(amount)*10000)+''))
+      .approve(NFTX_PROXY, ethers.constants.MaxUint256)
       .send(
         {
           from: account,
@@ -118,11 +117,6 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
         console.log(receipt);
       });
   };
-
-  const isApproved = () =>
-    allowance &&
-    !isNaN(parseInt(amount)) &&
-    parseInt(amount)*10000 <= web3.utils.fromWei(allowance);
 
   if (!doneRedeeming && (!txHash || (txIsApproval && txReceipt))) {
     return (
@@ -140,36 +134,33 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
             margin-bottom: 10px;
           `}
         />
-        <div
-          css={`
-            margin-top: 5px;
-            margin-bottom: 10px;
-          `}
-        >
-          {(() =>
-            isApproved() ? (
-              <Button label={`Approved`} wide={true} disabled={true} />
-            ) : (
+        {!allowance.toNumber() ? (
               <Button
-                label={`Approve ${
-                  !isNaN(parseInt(amount)) ? parseInt(amount)*10000 : ""
-                } ${fundData.xToken.symbol}`}
+                label={`Approve ${fundData.xToken.symbol}`}
                 wide={true}
-                disabled={!amount || !account}
+                disabled={!account}
                 onClick={handleApprove}
               />
-            ))()}
+            ) : (
+              <Button
+                label={                
+                  tokenBalance.dividedBy(new BigNumber(10).pow(18)).toNumber() >= (!isNaN(parseInt(amount)) ? parseInt(amount)* 10000 : 0)               
+                  ? `Redeem ${!isNaN(parseInt(amount)) ? parseInt(amount) : ""} ${fundData.asset.symbol} NFT` :
+                  `${fundData.xToken.symbol} 余额不足`                
+                }
+                wide={true}
+                disabled={!parseInt(amount) || !account}
+                onClick={handleRedeem}
+              />
+            )}
+        <div
+          // css={`
+          // `}
+        >
+          {fundData.xToken.symbol} 余额：{tokenBalance.dividedBy(new BigNumber(10).pow(18)).toNumber()}<br/>
+          每赎回一枚{fundData.asset.symbol} NFT需消耗10000 {fundData.xToken.symbol}
         </div>
 
-        {/* // TODO 判断用户余额，如果超过余额提示余额不足 */}
-        <Button
-          label={`Redeem ${!isNaN(parseInt(amount)) ? parseInt(amount) : ""} ${
-            fundData.asset.symbol
-          }`}
-          wide={true}
-          disabled={!amount || !account || !isApproved()}
-          onClick={handleRedeem}
-        />
       </div>
     );
   } else if (txHash && !txReceipt) {
@@ -229,4 +220,4 @@ function RedeemD1FundPanel({ fundData, ticker, onContinue }) {
   }
 }
 
-export default RedeemD1FundPanel;
+export default RedeemFundPanel;

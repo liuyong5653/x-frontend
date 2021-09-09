@@ -11,7 +11,7 @@ import Welcome from "../Welcome/Welcome";
 import RoundButton from "./RoundButton/RoundButton";
 import FundsIndex from "../FundsIndex/FundsIndex";
 import Backend from "../Backend/Backend";
-import FundView from "../FundView/FundView";
+import FundViewIndex from "../FundViewIndex/FundViewIndex";
 import Tutorial from "../Tutorial/Tutorial";
 import fundInfo from "../../data/fundInfo.json";
 
@@ -165,7 +165,7 @@ function Site({ selectorNetworks }) {
               <Backend />
             </Route>
             <Route path="/fund">
-              <FundView fundsData={fundsData} balances={balances} />
+              <FundViewIndex fundsData={fundsData} balances={balances} />
             </Route>
             <Route path="/tutorial">
               <Tutorial />

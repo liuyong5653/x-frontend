@@ -39,6 +39,8 @@ function ManageFundPanel({
   const [nftIds, setNftIds] = useState("");
   const [areEligible, setAreEligible] = useState("");
   const [shouldNegate, setShouldNegate] = useState("");
+  const [rangeStart, setRangeStart] = useState("");
+  const [rangeEnd, setRangeEnd] = useState("");
   // const [tokenId, setTokenId] = useState("");
   // const [recipient, setRecipient] = useState("");
 
@@ -98,6 +100,7 @@ function ManageFundPanel({
 
   const handleSetIsEligible = () => {
     console.log("inside handleSetIsEligible() !!!!! ");
+    console.log(nftIds)
     console.log("JSON.parse(nftIds)====>",JSON.parse(nftIds))
     console.log("vaultId====>",vaultId)
     console.log('areEligible.toLowerCase().includes("true")===>', areEligible.toLowerCase().includes("true"))
@@ -144,6 +147,33 @@ function ManageFundPanel({
         (error, txHash) => {}
       )
       .on("error", (error) => setTxError(error))
+      .on("transactionHash", (txHash) => setTxHash(txHash))
+      .on("receipt", (receipt) => {
+        setTxReceipt(receipt);
+      });
+  };
+
+  const handleSetRange = () => {
+    console.log("handleSetRange() !!!!! ")
+    console.log("vaultId====>",vaultId)
+    console.log("rangeStart====>",rangeStart)
+    console.log("rangeEnd====>",rangeEnd)
+    nftx.methods
+      .setRange(
+        vaultId,
+        rangeStart,
+        rangeEnd
+      )
+      .send(
+        {
+          from: account,
+        },
+        (error, txHash) => {}
+      )
+      .on("error", (error) => {
+        console.log("handleSetRange error", error);
+        setTxError(error);
+      })
       .on("transactionHash", (txHash) => setTxHash(txHash))
       .on("receipt", (receipt) => {
         setTxReceipt(receipt);
@@ -295,6 +325,40 @@ function ManageFundPanel({
             `}
           />
         </div>
+
+        <div>
+          <TextInput
+            value={rangeStart}
+            onChange={(event) => setRangeStart(event.target.value)}
+            placeholder="Start NFT ID"
+            wide={true}
+            css={`
+              margin-bottom: 10px;
+            `}
+          />
+          <TextInput
+            value={rangeEnd}
+            onChange={(event) => setRangeEnd(event.target.value)}
+            placeholder="END NFT ID"
+            wide={true}
+            css={`
+              margin-bottom: 10px;
+            `}
+          />
+          <Button
+            label={"Set NFT Eligible RANGE"}
+            wide={true}
+            disabled={
+              isClosed || (isFinalized && account?.toLowerCase() !== nftxAdmin?.toLowerCase()) || (!isFinalized  && account?.toLowerCase() !== manager?.toLowerCase())
+            }
+            onClick={handleSetRange}
+            css={`
+              margin-top: 5px;
+              margin-bottom: 15px;
+            `}
+          />
+        </div>
+
         <div>
           <Button
             label={"Finalize Fund"}

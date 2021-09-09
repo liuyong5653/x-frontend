@@ -22,7 +22,7 @@ import { useFavoriteNFTs } from "../../contexts/FavoriteNFTsContext";
 const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
 const XSTORE = process.env.REACT_APP_XSTORE
 
-function MintD1FundPanel({
+function MintFundPanel({
   fundData,
   onContinue,
   onMakeRequest,
@@ -60,23 +60,8 @@ function MintD1FundPanel({
   // const isKittyAddr = (address) => {
   //   const kittyAddr = "0x06012c8cf97BEaD5deAe237070F9587f8E7A266d";
   //   return address.toLowerCase() === kittyAddr.toLowerCase();
-  // };
-
-  const [is1155, setIs1155] = useState(false);
-
-  console.log("MintD1FundPanel fundData====>", fundData)
-
-  useEffect(() => {
-    if (nftx) {
-      nftx.methods
-        .isVault1155(fundData.vaultId)
-        .call()
-        .then((retVal) => {
-          // console.log("1155", retVal);
-          setIs1155(retVal);
-        });
-    }
-  }, [fundData.vaultId, nftx]);
+  // };  
+  console.log("MintFundPanel fundData====>", fundData)
 
   /* useEffect(() => {
     xStore.methods
@@ -111,7 +96,7 @@ function MintD1FundPanel({
   const fetchIsApprovedAll = () => {
     // if (!isKittyAddr(fundData.asset.address)) {
       const nft = new web3.eth.Contract(
-        is1155 ? IErc1155.abi : IErc721.abi,
+        fundData.is1155 ? IErc1155.abi : IErc721.abi,
         fundData.asset.address
       );
       nft.methods
@@ -130,8 +115,8 @@ function MintD1FundPanel({
       let count = 0;
       tokenIdsArr.forEach((tokenId, index) => {
         const finish = (retVal) => {
-          nftExistenceArr[index] = is1155 || retVal !== "DNE";
-          nftOwnershipArr[index] = is1155
+          nftExistenceArr[index] = fundData.is1155 || retVal !== "DNE";
+          nftOwnershipArr[index] = fundData.is1155
             ? parseInt(retVal) > 0
             : retVal === account;
           count += 1;
@@ -149,7 +134,7 @@ function MintD1FundPanel({
             );
           }
         };
-        if (is1155) {
+        if (fundData.is1155) {
           const nft = new web3.eth.Contract(
             IErc1155.abi,
             fundData.asset.address
@@ -414,7 +399,7 @@ function MintD1FundPanel({
                   } else if (!nftData[index].ownership) {
                     return "Not owner";
                   } else if (!nftData[index].approval && !isApprovedForAll) {
-                    return is1155 ? (
+                    return fundData.is1155 ? (
                       "Not approved"
                     ) : (
                       <Button
@@ -502,4 +487,4 @@ function MintD1FundPanel({
   }
 }
 
-export default MintD1FundPanel;
+export default MintFundPanel;
