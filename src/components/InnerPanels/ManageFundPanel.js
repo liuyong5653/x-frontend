@@ -23,14 +23,7 @@ function ManageFundPanel({
   isClosed,
 }) {
   const { account } = useWallet();
-
-  const injected = window.ethereum;
-  // const provider =
-  //   (injected && injected.chainId === "0x1") || injected.isFrame
-  //     ? injected
-  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
-
-  const provider = injected
+  const provider = window.ethereum;
   const { current: web3 } = useRef(new Web3(provider));
   const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
 

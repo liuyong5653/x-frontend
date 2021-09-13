@@ -28,15 +28,9 @@ function MintFundPanel({
   onMakeRequest,
   allowMintRequests,
 }) {
-  const { account } = useWallet();
-  const injected = window.ethereum;
-  // const provider =
-  //   injected && injected.chainId === "0x1"
-  //     ? injected
-  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
-
-  const provider = injected
-  const { current: web3 } = useRef(new Web3(provider));
+  const { account, ethereum } = useWallet();
+  // const { current: web3 } = useRef(new Web3(window.ethereum));
+  const { current: web3 } = useRef(new Web3(ethereum));
   const xStore = new web3.eth.Contract(XStore.abi, XSTORE);
   const nftx = new web3.eth.Contract(Nftx.abi, NFTX_PROXY);
 
@@ -333,23 +327,42 @@ function MintFundPanel({
             margin-bottom: 10px;
           `}
         />
-        <Button
-          label={`Mint ${nftData.length > 0 ? nftData.length*10000 + " " : ""}${
-            fundData.xToken.symbol
-          }`}
-          wide={true}
-          disabled={
-            nftData.length === 0 ||
-            nftData.filter(
-              (elem, index) =>
-                !elem.existence ||
-                !elem.ownership ||
-                (!elem.approval && !isApprovedForAll) ||
-                !nftEligData[index]
-            ).length > 0
-          }
-          onClick={handleMint}
-        />
+
+        {isApprovedForAll ? (
+            <Button
+              label={`Mint ${nftData.length > 0 ? nftData.length*10000 + " " : ""}${
+                fundData.xToken.symbol
+              }`}
+              wide={true}
+              disabled={
+                nftData.length === 0 ||
+                nftData.filter(
+                  (elem, index) =>
+                    !elem.existence ||
+                    !elem.ownership ||
+                    (!elem.approval && !isApprovedForAll) ||
+                    !nftEligData[index]
+                ).length > 0
+              }
+              onClick={handleMint}
+            />
+          ) : (
+            <Button
+              label={"Approve All"}
+              wide={true}
+              disabled={!account}
+              onClick={() => handleSetApproveAll(!isApprovedForAll)}
+            />          
+          )}
+
+        <div
+          // css={`
+          // `}
+        >
+          每一枚{fundData.asset.symbol} NFT可铸10000 {fundData.xToken.symbol}，铸币成功后，消耗的{fundData.asset.symbol}不再属于您。
+          {/* {fundData.xToken.symbol} 总数：{tokenBalance.dividedBy(new BigNumber(10).pow(18)).toNumber()} */}
+        </div>
+
         <div
           css={`
             margin-top: 15px;
@@ -398,16 +411,18 @@ function MintFundPanel({
                     // }
                   } else if (!nftData[index].ownership) {
                     return "Not owner";
-                  } else if (!nftData[index].approval && !isApprovedForAll) {
-                    return fundData.is1155 ? (
-                      "Not approved"
-                    ) : (
-                      <Button
-                        label="Approve Transfer"
-                        onClick={() => handleApprove(tokenId)}
-                      />
-                    );
-                  } else {
+                  } 
+                  // else if (!nftData[index].approval && !isApprovedForAll) {
+                  //   // return fundData.is1155 ? (
+                  //   //   "Not approved"
+                  //   // ) : (
+                  //   //   <Button
+                  //   //     label="Approve Transfer"
+                  //   //     onClick={() => handleApprove(tokenId)}
+                  //   //   />
+                  //   // );
+                  // } 
+                  else {
                     return <IconCircleCheck />;
                   }
                 })()}
@@ -426,9 +441,9 @@ function MintFundPanel({
             </div>
           ))}
         </div>
-        {fundData.asset.address &&
+        {/* {fundData.asset.address &&
           // !isKittyAddr(fundData.asset.address) &&
-          approveOrUnapproveAllBtn}
+          approveOrUnapproveAllBtn} */}
       </div>
     );
   } else if (txHash && !txReceipt) {
@@ -481,7 +496,7 @@ function MintFundPanel({
           />
         </div>
         <Button label="Return to Page" wide={true} onClick={handleViewNFT} />
-        {isApprovedForAll && approveOrUnapproveAllBtn}
+        {/* {isApprovedForAll && approveOrUnapproveAllBtn} */}
       </div>
     );
   }
