@@ -22,8 +22,8 @@ import { useFavoriteNFTs } from "../../contexts/FavoriteNFTsContext";
 const NFTX_PROXY = process.env.REACT_APP_NFTX_PROXY
 const XSTORE = process.env.REACT_APP_XSTORE
 
-// TODO 自动获取用户拥有的所有的NFT，然后点击选中进行铸币
-function MintFundPanel({
+// 用户自己输入拥有的TokenId铸币
+function MintFundPanelOld({
   fundData,
   onContinue,
   onMakeRequest,
@@ -51,7 +51,11 @@ function MintFundPanel({
   const [txError, setTxError] = useState(null);
 
   const [doneMinting, setDoneMinting] = useState(false);
- 
+
+  // const isKittyAddr = (address) => {
+  //   const kittyAddr = "0x06012c8cf97BEaD5deAe237070F9587f8E7A266d";
+  //   return address.toLowerCase() === kittyAddr.toLowerCase();
+  // };  
   console.log("MintFundPanel fundData====>", fundData)
 
   /* useEffect(() => {
@@ -499,4 +503,4 @@ function MintFundPanel({
   }
 }
 
-export default MintFundPanel;
+export default MintFundPanelOld;

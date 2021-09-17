@@ -26,14 +26,12 @@ import { getWeb3, getLatestBlockTimestamp } from "../../web3-utils";
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000;
 
 export function useNetworkConnectionData() {
-  const { ethereum } = useWallet();
-  // console.log("------------>useNetworkConnectionData")
-  // console.log(ethereum)
-  // const injected = window.ethereum;
-  // const provider = injected
-  // const walletWeb3 = getWeb3(provider);
-
-  const walletWeb3 = ethereum && getWeb3(ethereum);
+  // const { ethereum } = useWallet();
+  // const walletWeb3 = ethereum && getWeb3(ethereum);
+  console.log("------------>useNetworkConnectionData")
+  const injected = window.ethereum;
+  const provider = injected
+  const walletWeb3 = getWeb3(provider);
   const [walletChainId, setWalletChainId] = useState(-1);
   const clientChainId = network.chainId;
   useEffect(() => {

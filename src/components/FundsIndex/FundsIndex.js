@@ -27,7 +27,7 @@ import Web3 from "web3";
 
 import FundsList from "../FundsList/FundsList";
 
-function FundsIndex({ fundsData, balances, getSelection, setSelection }) {
+function FundsIndex({ fundsData, allSwapTokens, getSelection, setSelection }) {
   const {
     isVaultIdFavorited,
     removeFavoriteByVaultId,
@@ -151,7 +151,7 @@ function FundsIndex({ fundsData, balances, getSelection, setSelection }) {
         //   </div>
         // }
       />
-      <FundsList fundsListData={getVisibleFundsData()} balances={balances} />
+      <FundsList fundsListData={getVisibleFundsData()} allSwapTokens={allSwapTokens} />
       
       <SidePanel
         title={panelTitle}

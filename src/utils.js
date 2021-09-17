@@ -1,10 +1,12 @@
 import { POLL_DELAY_CONNECTIVITY } from "./constants";
+import BigNumber from 'bignumber.js'
 import { getWeb3 } from "./web3-utils";
-import { nftxClient, newSwapClient } from './apollo/client'
+import { nftxClient, newSwapClient, newMallClient} from './apollo/client'
 import {
   ALL_VAULTS,
   ALL_PAIRS,
-  ALL_TOKENS
+  ALL_TOKENS,
+  OWNER_ALL_NFT
 } from './apollo/queries'
 
 export const pollConnectivity = pollEvery((providers = [], onConnectivity) => {
@@ -149,7 +151,7 @@ export const getAllPairs = async () => {
 }
 
 // Loop through every token on newSwap, used for search
-export const getAllTokens = async () => {
+export const getAllSwapTokens = async () => {
   try {
     let allFound = false
     let tokens = []
@@ -163,7 +165,7 @@ export const getAllTokens = async () => {
         fetchPolicy: 'cache-first'
       })
       skipCount = skipCount + 500
-      // console.log("getAllTokens----------->")
+      // console.log("getAllSwapTokens----------->")
       // console.log(result)
       tokens = tokens.concat(result?.data?.tokens)
       if (result?.data?.tokens.length < 500 || tokens.length > 500) {
@@ -175,4 +177,49 @@ export const getAllTokens = async () => {
     console.log(e)
     return []
   }
+}
+
+export const getAllNFT = async (owner, contract) => {
+  try {
+    let allFound = false
+    let ownerPerTokens = []
+    let skipCount = 0
+    while (!allFound) {
+      let result = await newMallClient.query({
+        query: OWNER_ALL_NFT,
+        variables: {
+          owner: owner,
+          contract: contract,
+          skip: skipCount
+        },
+        fetchPolicy: 'network-only'
+      })
+      skipCount = skipCount + 500
+      // console.log("getAllNFT----------->")
+      // console.log(result)
+      // console.log(result?.data?.ownerPerTokens)
+
+      ownerPerTokens = ownerPerTokens.concat(result?.data?.ownerPerTokens)
+      if (result?.data?.ownerPerTokens.length < 500 || ownerPerTokens.length > 500) {
+        allFound = true
+      }
+    }
+    return ownerPerTokens
+  } catch (e) {
+    console.log("error getAllNFT--------------------")
+    console.log(e)
+    return []
+  }
+}
+
+export const getNewPrice = async (newNUSDTPairContract, wnewAddress) => {
+  const reserves = await newNUSDTPairContract.methods.getReserves().call()
+  const token1 = await newNUSDTPairContract.methods.token1().call()
+
+  if(token1.toLowerCase() === wnewAddress)  // token0-usdt,token1-new
+    return  (new BigNumber(reserves._reserve0).div(new BigNumber(10).pow(6)))        
+              .div(new BigNumber(reserves._reserve1).div(new BigNumber(10).pow(18)))
+  else 
+    return  (new BigNumber(reserves._reserve1).div(new BigNumber(10).pow(6)))
+              .div(new BigNumber(reserves._reserve0).div(new BigNumber(10).pow(18)))
 }

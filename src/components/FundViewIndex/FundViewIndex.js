@@ -8,8 +8,7 @@ import { Button, DataView, textStyle } from "@aragon/ui";
 
 const XSTORE = process.env.REACT_APP_XSTORE
 
-function FundViewIndex({ fundsData, balances }) {
-  console.log("FundViewIndex balances====》", balances);
+function FundViewIndex({ fundsData, allSwapTokens }) {
   const { account } = useWallet();
   const injected = window.ethereum;
   // const provider =
@@ -52,7 +51,7 @@ function FundViewIndex({ fundsData, balances }) {
   if (invalidVid) {
     return <div>Invalid Pool ID</div>;
   } else if (degree === 1) {
-    return <FundView fundsData={fundsData} balances={balances} />;
+    return <FundView fundsData={fundsData} allSwapTokens={allSwapTokens} />;
   // } else if (degree === 2) {
   //   return <D2FundView fundsData={fundsData} balances={balances} />;
   } else {

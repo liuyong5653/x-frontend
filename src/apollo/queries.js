@@ -50,12 +50,26 @@ export const ALL_PAIRS = gql`
 
 export const ALL_TOKENS = gql`
   query tokens($skip: Int!) {
-    tokens(first: 500, skip: $skip, orderBy: totalLiquidity, orderDirection: desc) {
+    tokens(first: 500, skip: $skip, orderBy: tradeVolumeUSD, orderDirection: desc) {
       id
       name
       symbol
+      tradeVolumeUSD
       derivedETH
       totalLiquidity
+    }
+  }
+`
+
+export const OWNER_ALL_NFT = gql`
+  query ownerPerTokens($owner: String!, $contract: String!, $skip: Int!) {
+    ownerPerTokens(where: {owner: $owner, contract: $contract}, skip: $skip, first: 500) {
+      id
+      token {
+        id
+        uri
+        tokenId
+      }
     }
   }
 `

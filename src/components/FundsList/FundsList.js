@@ -28,8 +28,12 @@ import XToken from "../../contracts/XToken.json";
 import ApproveNftsPanel from "../InnerPanels/ApproveNftsPanel";
 import Web3Utils from "web3-utils";
 import fundInfo from "../../data/fundInfo.json";
+import useNewPrice from "../../hooks/useNewPrice"
+import BigNumber from 'bignumber.js'
 
-function FundsList({ fundsListData, balances, hideInspectButton }) {
+const NEWSWAP_APP = process.env.REACT_APP_NEWSWAP_APP
+const NEWSWAP_INFO = process.env.REACT_APP_NEWSWAP_INFO
+function FundsList({ fundsListData, allSwapTokens, hideInspectButton }) {
   const {
     isVaultIdFavorited,
     removeFavoriteByVaultId,
@@ -49,6 +53,9 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
   const [panelTitle, setPanelTitle] = useState("");
   const [panelOpened, setPanelOpened] = useState(false);
   const [innerPanel, setInnerPanel] = useState(<div></div>);
+
+  const newPrice = useNewPrice()
+  console.log('newPrice-------->' + newPrice)
 
   const truncateDecimal = (inputStr) => {
     if (!inputStr.includes(".")) {
@@ -108,6 +115,10 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
     return fundInfo.find((elem) => elem.vaultId == vaultId);
   };
 
+  const getSwapTokenInfo = (id) => {
+    return allSwapTokens?.find((elem) => elem.id == id);
+  };
+
   return (
     <div>
       <DataView
@@ -161,6 +172,7 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
           const nftSymbol = asset.symbol;
           const fundSymbol = xToken.symbol;
           const fundAddress = entry.xToken.address;
+          const swapTokenInfo = getSwapTokenInfo(xToken.address)
           // console.log("entry", entry);
           const cells = [
             hideInspectButton ? (
@@ -187,22 +199,24 @@ function FundsList({ fundsListData, balances, hideInspectButton }) {
             //   NewSwap
             // </Link>,
             <a
-              href= {"https://app.newswap.org/#/swap?inputCurrency=NEW&outputCurrency=" + xToken.address}
+              href= { swapTokenInfo ? NEWSWAP_APP + "/#/swap?inputCurrency=NEW&outputCurrency=" + xToken.address : NEWSWAP_APP + '/#/add/NEW/' + xToken.address}
               target="_blank"
               rel="noreferrer"            
             >
               NewSwap
             </a>,
             <a
-              href="https://info.newswap.org/"
+              href={ swapTokenInfo ? NEWSWAP_INFO + '/token/' + xToken.address : NEWSWAP_APP + '/#/add/NEW/' + xToken.address}
               target="_blank"
               rel="noreferrer"            
             >
-              $0.00
+              { swapTokenInfo ? 
+                '$'+ truncateDecimal(new BigNumber(swapTokenInfo.totalLiquidity).times(swapTokenInfo.derivedETH).times(newPrice).times(2).toString())
+                : '$0.00' }
             </a>,
             <div>
-              {(entry.priceEth && truncateDecimal(entry.priceEth.toString())) ||
-                "TBD"
+              {
+                swapTokenInfo ? '$'+ truncateDecimal(new BigNumber(swapTokenInfo.derivedETH).times(newPrice).toString()) : 'TBD'
               }
             </div>,
             // <div>

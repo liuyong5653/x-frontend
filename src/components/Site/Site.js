@@ -4,7 +4,7 @@ import { BREAKPOINTS, useTheme, IconExternal, Info } from "@aragon/ui";
 import { useWallet } from "use-wallet";
 import throttle from "lodash.throttle";
 import axios from "axios";
-import {getAllVaults} from "../../utils";
+import {getAllVaults, getAllSwapTokens} from "../../utils";
 
 import TopBar from "../TopBar/TopBar";
 import Welcome from "../Welcome/Welcome";
@@ -36,6 +36,7 @@ function Site({ selectorNetworks }) {
 
   const [eventsCount, setEventsCount] = useState(null);
   const [fundsData, setFundsData] = useState(null);
+  const [allSwapTokens, setAllSwapTokens] = useState(null);
 
   const [balances, setBalances] = useState(null);
 
@@ -91,21 +92,31 @@ function Site({ selectorNetworks }) {
     // ]
   };
 
+  const fetchAllSwapTokens = async () => {
+    console.log("fetching all swap tokens ...");
+    const _allSwapTokens = await getAllSwapTokens()
+    setAllSwapTokens(_allSwapTokens)
+
+    console.log("allSwapTokens===",_allSwapTokens)
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const checkAndFetchNewData = async () => {
     fetchVaultsData();
+    fetchAllSwapTokens();
+
     fetchBalances();
   };
 
-  // get balances data from CovalentHQ
-  useEffect(() => {
-    fetchBalances();
-    // console.log("TODO: get balance updates using websocket");
-    const interval = setInterval(async () => {
-      fetchBalances();
-    }, 20000);
-    return () => clearInterval(interval);
-  }, [account]);
+  // // get balances data from CovalentHQ
+  // useEffect(() => {
+  //   fetchBalances();
+  //   // console.log("TODO: get balance updates using websocket");
+  //   const interval = setInterval(async () => {
+  //     fetchBalances();
+  //   }, 20000);
+  //   return () => clearInterval(interval);
+  // }, [account]);
 
   // keep checking for new fund data
   useEffect(() => {
@@ -156,6 +167,7 @@ function Site({ selectorNetworks }) {
             <Route path="/" exact>
               <FundsIndex
                 fundsData={fundsData}
+                allSwapTokens={allSwapTokens}
                 balances={balances}
                 getSelection={getSelection}
                 setSelection={setSelection}
@@ -165,7 +177,7 @@ function Site({ selectorNetworks }) {
               <Backend />
             </Route>
             <Route path="/fund">
-              <FundViewIndex fundsData={fundsData} balances={balances} />
+              <FundViewIndex fundsData={fundsData} allSwapTokens={allSwapTokens} />
             </Route>
             <Route path="/tutorial">
               <Tutorial />
