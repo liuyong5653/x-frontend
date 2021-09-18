@@ -29,30 +29,28 @@ import ApproveNftsPanel from "../InnerPanels/ApproveNftsPanel";
 import Web3Utils from "web3-utils";
 import fundInfo from "../../data/fundInfo.json";
 import useNewPrice from "../../hooks/useNewPrice"
+import useTokensBalance from '../../hooks/useTokensBalance'
 import BigNumber from 'bignumber.js'
 
 const NEWSWAP_APP = process.env.REACT_APP_NEWSWAP_APP
 const NEWSWAP_INFO = process.env.REACT_APP_NEWSWAP_INFO
 function FundsList({ fundsListData, allSwapTokens, hideInspectButton }) {
-  const {
-    isVaultIdFavorited,
-    removeFavoriteByVaultId,
-    addFavorite,
-  } = useFavoriteFunds();
+  // const {
+  //   isVaultIdFavorited,
+  //   removeFavoriteByVaultId,
+  //   addFavorite,
+  // } = useFavoriteFunds();
   const history = useHistory();
   const { account } = useWallet();
-  const injected = window.ethereum;
-  // const provider =
-  //   injected && injected.chainId === "0x1"
-  //     ? injected
-  //     : `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`;
-
-  const provider = injected
+  const provider = window.ethereum
   const { current: web3 } = useRef(new Web3(provider));
 
   const [panelTitle, setPanelTitle] = useState("");
   const [panelOpened, setPanelOpened] = useState(false);
   const [innerPanel, setInnerPanel] = useState(<div></div>);
+
+  // const balances = useTokensBalance(fundsListData)
+  // console.log('useTokensBalance-------->',balances)
 
   const newPrice = useNewPrice()
   console.log('newPrice-------->' + newPrice)
@@ -74,19 +72,13 @@ function FundsList({ fundsListData, allSwapTokens, hideInspectButton }) {
     }
   };
 
-  const fundData = (vaultId) =>
-    fundsListData.find((fund) => fund.vaultId == vaultId);
-
   const handleMint = (vaultId, ticker) => {
     if (!fundData(vaultId)) return;
-    // quickest and easiest way is to enable the return window.location and comment out the rest of the function.
-//     return window.location.href = `https://app.nftx.org/mint/${vaultId}`;
 
     setPanelTitle(`${ticker} ▸ Mint`);
     setInnerPanel(
       <MintFundPanel
         fundData={fundData(vaultId)}
-        // balances={balances}
         onContinue={() => {
           setPanelOpened(false);
         }}
@@ -102,7 +94,6 @@ function FundsList({ fundsListData, allSwapTokens, hideInspectButton }) {
     setInnerPanel(
         <RedeemFundPanel
           fundData={_fundData}
-          // balances={balances}
           onContinue={() => {
             setPanelOpened(false);
           }}
@@ -111,9 +102,8 @@ function FundsList({ fundsListData, allSwapTokens, hideInspectButton }) {
     setPanelOpened(true);
   };
 
-  const getFundInfo = (vaultId) => {
-    return fundInfo.find((elem) => elem.vaultId == vaultId);
-  };
+  const fundData = (vaultId) =>
+    fundsListData.find((fund) => fund.vaultId == vaultId);
 
   const getSwapTokenInfo = (id) => {
     return allSwapTokens?.find((elem) => elem.id == id);
@@ -130,39 +120,11 @@ function FundsList({ fundsListData, allSwapTokens, hideInspectButton }) {
             "TRADE $NRC6",
             "LIQUIDITY",
             "FLOOR PRICE",
-            // "Type",
-            // <div>
-            //   <div
-            //     css={`
-            //       display: inline-block;
-            //       position: relative;
-            //       cursor: default;
-            //     `}
-            //   >
-            //     {"Fin / Ver / AMM"}
-            //     <div
-            //       css={`
-            //         position: absolute;
-            //         top: 0;
-            //         right: -22px;
-            //     }
-            //       `}
-            //     >
-            //       <Help hint="What are Ethereum addresses made of?">
-            //         <p>FIN = Finalized</p>
-            //         <p>VER = Verified</p>
-            //         <p>AMM = Swappable via an AMM</p>
-            //       </Help>
-            //     </div>
-            //   </div>
-            // </div>,
-            // "",
           ];
-          // TODO 获得balances
-          // if (account && balances) {
-          if (account) {         
-            fields.splice(5, 0, "Bal");
-          }
+          // if (account && balances?.length > 0) {         
+          //   fields.splice(5, 0, "Bal");
+          // }
+
           return fields;
         })()}
         entries={fundsListData || []}
@@ -216,85 +178,30 @@ function FundsList({ fundsListData, allSwapTokens, hideInspectButton }) {
             </a>,
             <div>
               {
-                swapTokenInfo ? '$'+ truncateDecimal(new BigNumber(swapTokenInfo.derivedETH).times(newPrice).toString()) : 'TBD'
+                swapTokenInfo ? '$'+ truncateDecimal(new BigNumber(swapTokenInfo.derivedETH).times(newPrice).times(10000).toString()) : 'TBD'
               }
             </div>,
-            // <div>
-            //   {truncateDecimal(
-            //     xToken.totalSupply
-            //     // web3.utils.fromWei(xToken.totalSupply.toString())
-            //   )}
-            // </div>,
-            // <div>{entry.isD2Vault ? "D2" : "D1"}</div>,
-            // <div>
-            //   <div
-            //     css={`
-            //       transform: translateX(-4px);
-            //       & > svg {
-            //         margin: 0 2px;
-            //       }
-            //     `}
-            //   >
-            //     {isFinalized ? <IconCircleCheck /> : <IconCircleMinus />}{" "}
-            //     {getFundInfo(vaultId) && getFundInfo(vaultId).verified ? (
-            //       <IconCircleCheck />
-            //     ) : (
-            //       <IconCircleMinus />
-            //     )}{" "}
-            //     {getFundInfo(vaultId) && getFundInfo(vaultId).amm ? (
-            //       <IconCircleCheck />
-            //     ) : (
-            //       <IconCircleMinus />
-            //     )}{" "}
-            //   </div>
-            // </div>,
-            // <div
-            //   css={`
-            //     & > svg {
-            //     }
-            //     cursor: pointer;
-            //     padding: 5px;
-            //   `}
-            //   onClick={() =>
-            //     isVaultIdFavorited(vaultId)
-            //       ? removeFavoriteByVaultId(vaultId)
-            //       : addFavorite({
-            //           vaultId: vaultId,
-            //           ticker: fundSymbol,
-            //           address: fundAddress,
-            //         })
-            //   }
-            // >
-            //   {isVaultIdFavorited(vaultId) ? <IconStarFilled /> : <IconStar />}
-            // </div>,
           ];
-          // if (account && balances) {
-          if (account) {
-            // let _balance = balances.find(
-            //   (elem) =>
-            //     elem.contract_address.toLowerCase() ===
-            //     entry.xToken.address.toLowerCase()
-            // );
-
-            // cells.splice(       
-            //   3,  // 5,
-            //   0,
-            //   <div>
-            //     {_balance
-            //       ? truncateDecimal(web3.utils.fromWei(_balance.balance))
-            //       : "0"}
-            //   </div>
-            // );
-            cells.splice(       
-              5,
-              0,
-              <div>
-                0
-              </div>
-            );
-          }
+          
+          // if (account  && balances?.length > 0) {
+          //   let _balance = balances.find(
+          //     (elem) =>
+          //       elem.contract_address.toLowerCase() ===
+          //       entry.xToken.address.toLowerCase()
+          //   );
+          //   cells.splice(       
+          //     5,
+          //     0,
+          //     <div>
+          //       {_balance
+          //         ? truncateDecimal(web3.utils.fromWei(_balance.balance))
+          //         : "0"}
+          //     </div>
+          //   );
+          // }
           return cells;
         }}
+        // TODO 删除？list页面显示->调详情页？  详情页把mint和redeem放出来？
         renderEntryActions={(entry, index) => {
           const {
             vaultId,
